@@ -1,4 +1,4 @@
-import { jwtVerify } from "jose";
+import { jwtVerify, errors } from "jose";
 
 // GET SECRET KEY
 export const getSecretKey = () => {
@@ -10,15 +10,19 @@ export const getSecretKey = () => {
 
 // VERIFY JWT TOKEN
 export async function VerifyJwt(token){
-    if(!token) return null;
-    
+    if(!token) return null
+
     try {
         const { payload } = await jwtVerify(
             token, 
             getSecretKey()
-        );
+        )
         return payload;
     } catch (error) {
-        return null;
+
+        if(error instanceof errors.JWTExpired)
+            return { error: 'expired' }
+
+        return null
     }
 }

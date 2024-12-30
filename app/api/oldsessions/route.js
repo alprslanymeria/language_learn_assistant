@@ -8,21 +8,42 @@ const prisma = new PrismaClient();
 export async function GET(req){
 
     try {
-        const {pathname} = req.nextUrl
-        console.log(pathname)
+
         //Burada hangi kullanıcı olduğu bilgisi cookie ile birlikte gönderilen token bilgisi üzerinden alınır
         const token = req.headers.get('Authorization')
-        
+
+        // Burada süre bilgisi kontrol edilir eğer geçmiş ise unauthorized döner
         if(token != null)
         {
             const { payload } = await jwtVerify(token, getSecretKey());
-            console.log(payload.userId)
+            
+
+            if(!payload)
+            {
+                return NextResponse.json({message: 'Unauthorized'}, {status: 401})
+            }
+
+            const userId = payload.userId
+            const url = new URL(req.url)
+            const language = url.searchParams.get("language")
+            const practice = url.searchParams.get("practice")
+
+
+            const sessions = await prisma.oldSessions.findMany({
+                where: {
+                    userId: userId,
+                    languageId: language,
+                    practiceId: practice,
+                }
+            })
+
+            if (!sessions || sessions.length === 0)
+                return NextResponse.json({ message: 'No sessions found' }, { status: 404 })
+
+            return NextResponse.json({ sessions }, { status: 200 });
         }
 
-        const url = new URL(req.url);
-        const language = url.searchParams.get("language")
-        const practice = url.searchParams.get("practice")
-        return NextResponse.json({ language }, { status: 200 });
+        return NextResponse.json({message: 'Unauthorized'}, {status: 401})
 
     } catch (error) {
         
@@ -30,21 +51,3 @@ export async function GET(req){
         return NextResponse.json({ message: 'Error retrieving data', error: error.message }, { status: 500 });
     }
 }
-
-/*
-
-Veritabanında user tablosu - languages tablosu ve practices tablosu arasında bir ilişki olmalıdır.
-
-User
-Languages
-    Birden fazla pratik e sahiptir
-
-OldSessions tablosu olmalı
-    userId --> session hangi kullanıcı yaptı
-    language --> hangi dil için yaptı
-    practice --> hangi pratik için yaptı
-    CreatedOn --> session kapanış zamanı
-    Rate --> session başarı yüzdesi
-
-Session kapandığı zaman OldSession tablosuna veri eklenir
-*/

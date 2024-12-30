@@ -10,6 +10,47 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   userId  String   @unique
+  refreshToken String
   createdAt DateTime @default(now())
+  oldSessions OldSessions[]
+}
 
+model Language {
+  id        Int      @id @default(autoincrement())
+  language String @unique
+  picture String @unique
+  practices Practice[] @relation("LanguageToPractice")
+  oldSessions OldSessions[]
+}
+
+model Practice {
+  id Int @id @default(autoincrement())
+  practice String @unique
+  languages  Language[] @relation("LanguageToPractice")
+  oldSessions OldSessions[]
+}
+
+model OldSessions {
+  id Int @id @default(autoincrement())
+  userId String
+  languageId String
+  practiceId String
+  createdOn DateTime @default(now())
+  rate Int
+
+  user User @relation(fields: [userId], references: [userId])
+  language Language @relation(fields: [languageId], references: [language])
+  practice Practice @relation(fields: [practiceId], references: [practice])
+}
+
+model Book {
+  id Int @id @default(autoincrement())
+  bookName String @unique
+  imagePath String
+}
+
+model Film {
+  id Int @id @default(autoincrement())
+  filmName String @unique
+  imagePath String
 }

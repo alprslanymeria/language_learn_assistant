@@ -10,36 +10,81 @@ export async function middleware(req){
         return NextResponse.next();
     }
 
-    const {value: token} = req.cookies.get('token') ?? {value: null}
+    // Token bilgisi alınır
+    const {value: accessToken} = req.cookies.get('accessToken') ?? {value: null}
+    const {value: refreshToken} = req.cookies.get('refreshToken') ?? {value: null}
     console.log(pathname)
    
-    // Token kontrolü her zaman yapılır
-    const payload = await VerifyJwt(token)
+    // Token kontrolü her zaman yapılır (Tokenin gerçek bir JWT olup olmadığı kontrol edilir)
+    const payload = await VerifyJwt(accessToken)
+
+    // Token expire olmuş ise
+    if(payload && payload.error === 'expired')
+    {
+        const res = await fetch("http://localhost:3000/api/token", {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': accessToken,
+                'X-Refresh-Token': refreshToken,
+            },
+            credentials: 'include',
+        })
+
+        const data = await res.json();
+        const newAccessToken = data.accessToken;
+        const newRefreshToken = data.refreshToken;
+
+        const response = NextResponse.next();
+
+        response.cookies.set('accessToken', newAccessToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 31536000, // 2 hours
+        });
+        response.cookies.set('refreshToken', newRefreshToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 31536000, // 1 year
+        });
+
+        return response;
+    }
     
-    // Token yok ise
+    // Token yok veya geçerli değil ise
     if(!payload)
     {
-        const userID = uuidv4()
         const response = await fetch("http://localhost:3000/api/user", {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ userId: userID })
         })
         
         if (response.ok) {
             const data = await response.json();
-            const newToken = data.token;
+            const accessToken = data.accessToken;
+            const refreshToken = data.refreshToken;
 
             // Yeni NextResponse oluştur ve cookie'yi ayarla
             const res = NextResponse.next();
-            res.cookies.set('token', newToken, {
+            res.cookies.set('accessToken', accessToken, {
                 httpOnly: true,
                 secure: false,
                 sameSite: 'lax',
                 path: '/',
-                maxAge: 7200,
+                maxAge: 31536000,
+            });
+            res.cookies.set('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'lax',
+                path: '/',
+                maxAge: 31536000, // 1 year
             });
             return res;
         }

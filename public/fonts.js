@@ -1,5 +1,3 @@
-"use client"
-
 import { Mitr , Markazi_Text , Neuton } from 'next/font/google';
 
 const mitr = Mitr({

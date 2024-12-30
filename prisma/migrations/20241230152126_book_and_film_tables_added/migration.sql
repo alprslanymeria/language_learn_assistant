@@ -1,0 +1,34 @@
+BEGIN TRY
+
+BEGIN TRAN;
+
+-- CreateTable
+CREATE TABLE [dbo].[Book] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [bookName] NVARCHAR(1000) NOT NULL,
+    [imagePath] NVARCHAR(1000) NOT NULL,
+    CONSTRAINT [Book_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [Book_bookName_key] UNIQUE NONCLUSTERED ([bookName])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[Film] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [filmName] NVARCHAR(1000) NOT NULL,
+    [imagePath] NVARCHAR(1000) NOT NULL,
+    CONSTRAINT [Film_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [Film_filmName_key] UNIQUE NONCLUSTERED ([filmName])
+);
+
+COMMIT TRAN;
+
+END TRY
+BEGIN CATCH
+
+IF @@TRANCOUNT > 0
+BEGIN
+    ROLLBACK TRAN;
+END;
+THROW
+
+END CATCH

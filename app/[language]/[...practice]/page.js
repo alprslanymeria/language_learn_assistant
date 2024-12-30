@@ -1,29 +1,78 @@
+import InfoMessageComponent from '@/app/components/InfoMessageComponent';
+import { redirect } from 'next/dist/server/api-utils';
 import { cookies } from 'next/headers';
+import { markazi } from "@/public/fonts";
+import Link from 'next/link';
 
 export default async function Practice({params, req}) {
 
-    //Bu parametreler query olarak gönderiliir
-    const practice = (await params).practice
+    //Bu parametreler query olarak gönderilir
     const language = (await params).language
-    const {value: token} = (await cookies()).get('token') ?? {value: null}
+    const practice = (await params).practice
+    const {value: accessToken} = (await cookies()).get('accessToken') ?? {value: null}
 
-
+    //Burada o pratiğe ait language ve practice bilgisine göre mevcut kullanıcının yapmış olduğu önceki oturum bilgileri alınır
     const response = await fetch(`http://localhost:3000/api/oldsessions?language=${language}&practice=${practice}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token,
-        },
-        credentials: 'include',
-      });
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': accessToken,
+      },
+      credentials: 'include',
+    });
 
+    let data = [];
 
-    //Burada alınan language ve practice bilgisi ile veritabanından userId ile birlikte o kullanıcıya ait veriler çekilir
+    if(response.status == 401)
+        redirect('/')
+    else if(response.status == 200)
+    {
+        data = await response.json();
+    }
+
     
     return (
         <>
-            <h1>{practice}</h1>
-            <h1>{language}</h1>
+            <InfoMessageComponent message="On this page, you can see the work you have done in previous sessions or open a new session."></InfoMessageComponent>
+            {data.length == 0 ? (
+                <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                    <p className={`${markazi.className} mb-10 text-xl font-normal text-center`}>You Dont Have Any! Create One</p>
+                    <Link href={`/create/${practice}`} passHref>
+                        <button
+                            style={{
+                                padding: '10px 20px',
+                                fontSize: '16px',
+                                backgroundColor: '#007BFF',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '5px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Create New Session
+                        </button>
+                    </Link>
+                </div>
+            ) : (
+                <div style={{ backgroundColor: '#003366', padding: '20px', borderRadius: '10px', marginTop: '20px' }}>
+                    <h2 style={{ color: 'white', marginBottom: '20px' }}>Previous Sessions</h2>
+                    {data.map((session, index) => (
+                        <div
+                            key={index}
+                            style={{
+                                backgroundColor: 'white',
+                                padding: '15px',
+                                marginBottom: '10px',
+                                borderRadius: '5px',
+                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                            }}
+                        >
+                            <p style={{ margin: 0, fontWeight: 'bold' }}>Session Name: {session.name}</p>
+                            <p style={{ margin: 0 }}>Date: {session.date}</p>
+                        </div>
+                    ))}
+                </div>
+            )}
         </>
-    );
+    )
 }
