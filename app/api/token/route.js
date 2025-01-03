@@ -1,86 +1,84 @@
-import { getSecretKey } from "@/app/utils/session";
-import { NextResponse } from "next/server";
-import { SignJWT } from "jose";
-import { v4 as uuidv4 } from 'uuid';
-import { PrismaClient } from '@prisma/client';
+import { getSecretKey } from "@/app/lib/jwt"
+import { NextResponse } from "next/server"
+import { SignJWT } from "jose"
+import { v4 as uuidv4 } from 'uuid'
+import { prisma } from '@/app/lib/prisma'
 
-const prisma = new PrismaClient();
-
-// Burada accessToken ve refreshToken oluşturma işlemi gerçekleştirilecek
+// ACCESS VE REFRESH TOKEN OLUŞTURMAKTAN SORUMLUDUR
 export async function GET(request) {    
 
     try {
-        // Secret key alınır
-        const secretKey = getSecretKey();
-
+        const secretKey = getSecretKey()
         const userID = uuidv4()
 
-        // accessToken oluşturulur
+        // CREATE ACCESS TOKEN
         const accessToken = await new SignJWT({ userId: userID })
             .setProtectedHeader({ alg: 'HS256' })
             .setIssuedAt()
             .setExpirationTime('5m')
-            .sign(secretKey);
+            .sign(secretKey)
 
-        // refreshToken oluşturulur
-        const refreshToken = uuidv4();
+        // CREATE REFRESH TOKEN
+        const refreshToken = uuidv4()
 
         return NextResponse.json({accessToken, refreshToken, userID}, {status: 200})
 
     } catch (error) {
-
-        console.error(error)
-        return NextResponse.json({message: 'Token oluşturma hatası', error: error.message}, {status: 500})
+        return NextResponse.json(
+            {
+                error: true,
+                message: 'Token oluşturulurken bir hata oluştu',
+                details: error.message
+            }, 
+            {status: 500})
     }
 }
 
+// ACCESS TOKEN VE REFRESH TOKEN GÜNCELLEMEKTEN SORUMLUDUR
 export async function PUT(request) {
 
     try {
         
-        // refreshToken bilgisi alınır
+        const secretKey = getSecretKey()
         const rt = String(request.headers.get('X-Refresh-Token'))
 
-        // User tablosunda userId alanı userId olan kayıtın refreshToken alanı karşılaştırılır
         const user = await prisma.user.findFirst({
             where: {
                 refreshToken: rt
             }
         })
 
-        if(user.refreshToken == rt)
-        {
-            // Secret key alınır
-            const secretKey = getSecretKey();
+        // CREATE NEW ACCESS TOKEN
+        const newAccessToken = await new SignJWT({ userId: user.userId })
+            .setProtectedHeader({ alg: 'HS256' })
+            .setIssuedAt()
+            .setExpirationTime('5m')
+            .sign(secretKey)
 
-            // accessToken oluşturulur
-            const newAccessToken = await new SignJWT({ userId: user.userId })
-                .setProtectedHeader({ alg: 'HS256' })
-                .setIssuedAt()
-                .setExpirationTime('5m')
-                .sign(secretKey);
+        // CREATE NEW REFRESH TOKEN
+        const newRefreshToken = uuidv4()
 
-            // refreshToken oluşturulur
-            const newRefreshToken = uuidv4();
+        // UPDATE USER REFRESH TOKEN
+        await prisma.user.update({
+            where: {
+                userId: user.userId,
+            },
+            data: {
+                refreshToken: newRefreshToken,
+            },
+        })
 
-            await prisma.user.update({
-                where: {
-                    userId: user.userId,
-                },
-                data: {
-                    refreshToken: newRefreshToken,
-                },
-            });
-
-            const res = NextResponse.json({ accessToken: newAccessToken, refreshToken: newRefreshToken }, { status: 200 });
-            
-            return res
-        }
-
-
+        return NextResponse.json({ accessToken: newAccessToken, refreshToken: newRefreshToken }, { status: 200 })
+        
     } catch (error) {
         
-        console.error(error)
-        return NextResponse.json({message: 'Token güncelleme hatası', error: error.message}, {status: 500})
+        return NextResponse.json(
+            {
+                error: true,
+                message: 'Token güncellenirken bir hata oluştu',
+                details: error.message
+            }, 
+            {status: 500}
+        )
     }
 }

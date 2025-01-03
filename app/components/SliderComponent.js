@@ -1,10 +1,36 @@
 "use client"
-import Image from "next/image";
-import { useState } from "react";
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import uuiv4 from 'uuid/v4'
 
-export default function SliderComponent({data, practice}) {
-   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
-   const getImageUrl = (item) => practice === 'Flashcards' ? item : item.imagePath;
+const BASE = process.env.NEXT_PUBLIC_API_URL
+
+export default function SliderComponent({data, practice, userId}) {
+   
+   const [selectedImageUrl, setSelectedImageUrl] = useState(null)
+   const router = useRouter()
+
+   const getImageUrl = (item) => practice === 'Flashcards' ? item : item.imagePath
+
+   const handleKeyDown = async (e) => {
+         
+        if (e.key === 'Enter') 
+        {
+            const sessionId = uuiv4()
+            const response = await fetch(`${BASE}/api/livesessions`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-User-Id': userId,
+                    'X-Session-Id': sessionId,
+                    }
+                }
+            )
+            if(response.ok)
+                router.push(`/session/?practice=${practice}&sessionId${sessionId}`)
+        }
+   }
  
    return (
        <div className="flex justify-center w-full">
@@ -21,6 +47,7 @@ export default function SliderComponent({data, practice}) {
                            ? 'scale-110 shadow-lg'
                            : 'hover:scale-102'
                        }`}
+                       onKeyDown={handleKeyDown}
                        onClick={() => setSelectedImageUrl(getImageUrl(item))}
                    >
                        {practice === 'Listening' ? (
@@ -47,5 +74,5 @@ export default function SliderComponent({data, practice}) {
                ))}
            </div>
        </div>
-   );
+   )
 }

@@ -1,35 +1,40 @@
-import { PrismaClient } from '@prisma/client';
-import { NextRequest, NextResponse } from 'next/server';
-import { SignJWT } from 'jose';
-import { cookies } from 'next/headers'
-import { getSecretKey } from '@/app/utils/session';
+import { NextResponse } from 'next/server'
+import { prisma } from '@/app/lib/prisma'
 
-const prisma = new PrismaClient();
+const BASE = process.env.NEXT_PUBLIC_API_URL
 
-export async function GET(request) {
-  try {
-  
-
-    const response = await fetch("http://localhost:3000/api/token", {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',}
+export async function POST(request) {
       
-      });
+  try {
 
-    const { accessToken , refreshToken, userID} = await response.json();
+      // CREATE TOKEN FOR USER
+      const response = await fetch(`${BASE}/api/token`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',}
+        })
 
-    // Kullanıcı oluşturulur
-    const newUser = await prisma.user.create({
-      data: {
-        userId: userID,
-        refreshToken: refreshToken,
-      },
-    })
-    
-    return NextResponse.json({newUser, accessToken: accessToken, refreshToken: refreshToken}, {status: 200})
+      const { accessToken , refreshToken, userID} = await response.json()
+
+      // CREATE NEW USER
+      const newUser = await prisma.user.create({
+        data: {
+          userId: userID,
+          refreshToken: refreshToken,
+        },
+      })
+      
+      return NextResponse.json({newUser, accessToken: accessToken, refreshToken: refreshToken}, {status: 200})
+
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: 'Kullanıcı oluşturmada beklenmedik hata', error: error.message }, { status: 500 });
+        
+      return NextResponse.json(
+        {
+          error: true,
+          message: 'User oluşturulurken bir hata oluştu',
+          details: error.message
+        },
+        { status: 500 }
+      )
   }
 }

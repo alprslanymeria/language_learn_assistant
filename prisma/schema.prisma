@@ -13,6 +13,7 @@ model User {
   refreshToken String
   createdAt DateTime @default(now())
   oldSessions OldSessions[]
+  liveSessions LiveSessions[]
 }
 
 model Language {
@@ -20,7 +21,10 @@ model Language {
   language String @unique
   picture String @unique
   practices Practice[] @relation("LanguageToPractice")
+
   oldSessions OldSessions[]
+  books      Book[]
+  films      Film[]
 }
 
 model Practice {
@@ -37,20 +41,37 @@ model OldSessions {
   practiceId String
   createdOn DateTime @default(now())
   rate Int
+  oldSessionId String
 
   user User @relation(fields: [userId], references: [userId])
   language Language @relation(fields: [languageId], references: [language])
   practice Practice @relation(fields: [practiceId], references: [practice])
 }
 
+model LiveSessions {
+  id Int @id @default(autoincrement())
+  liveSessionId String @unique
+  userId String
+
+  user User @relation(fields: [userId], references: [userId])
+}
+
 model Book {
   id Int @id @default(autoincrement())
+  languageId String @default("English")
   bookName String @unique
   imagePath String
+  sourcePath String @default("/pdfs/bulanti.pdf")
+  
+  language Language @relation(fields: [languageId], references: [language])
 }
 
 model Film {
   id Int @id @default(autoincrement())
+  languageId String @default("English")
   filmName String @unique
   imagePath String
+  sourcePath String @default("/films/video.mp4")
+
+  language Language @relation(fields: [languageId], references: [language])
 }

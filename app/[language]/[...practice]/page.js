@@ -1,35 +1,34 @@
-import InfoMessageComponent from '@/app/components/InfoMessageComponent';
-import { redirect } from 'next/dist/server/api-utils';
-import { cookies } from 'next/headers';
-import { markazi } from "@/public/fonts";
-import Link from 'next/link';
+import InfoMessageComponent from '@/app/components/InfoMessageComponent'
+import { redirect } from 'next/dist/server/api-utils'
+import { cookies } from 'next/headers'
+import { markazi } from "@/public/fonts"
+import Link from 'next/link'
 
-export default async function Practice({params, req}) {
+const BASE = process.env.NEXT_PUBLIC_API_URL
 
-    //Bu parametreler query olarak gönderilir
+export default async function Practice({params}) {
+
     const language = (await params).language
     const practice = (await params).practice
     const {value: accessToken} = (await cookies()).get('accessToken') ?? {value: null}
+    let data = []
 
-    //Burada o pratiğe ait language ve practice bilgisine göre mevcut kullanıcının yapmış olduğu önceki oturum bilgileri alınır
-    const response = await fetch(`http://localhost:3000/api/oldsessions?language=${language}&practice=${practice}`, {
+    const response = await fetch(`${BASE}/api/oldsessions?language=${language}&practice=${practice}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': accessToken,
       },
       credentials: 'include',
-    });
+    })
 
-    let data = [];
 
     if(response.status == 401)
         redirect('/')
     else if(response.status == 200)
     {
-        data = await response.json();
+        data = await response.json()
     }
-
     
     return (
         <>
@@ -37,7 +36,7 @@ export default async function Practice({params, req}) {
             {data.length == 0 ? (
                 <div style={{ textAlign: 'center', marginTop: '20px' }}>
                     <p className={`${markazi.className} mb-10 text-xl font-normal text-center`}>You Dont Have Any! Create One</p>
-                    <Link href={`/create/${practice}`} passHref>
+                    <Link href={`/create/?language=${language}&practice=${practice}`} passHref>
                         <button
                             style={{
                                 padding: '10px 20px',
@@ -67,8 +66,8 @@ export default async function Practice({params, req}) {
                                 boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
                             }}
                         >
-                            <p style={{ margin: 0, fontWeight: 'bold' }}>Session Name: {session.name}</p>
-                            <p style={{ margin: 0 }}>Date: {session.date}</p>
+                            <p style={{ margin: 0, fontWeight: 'bold' }}>{session.createdOn}</p>
+                            <p style={{ margin: 0 }}>Rate: {session.rate}/100</p>
                         </div>
                     ))}
                 </div>

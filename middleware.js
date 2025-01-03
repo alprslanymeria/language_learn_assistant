@@ -1,27 +1,58 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server"
-import { VerifyJwt } from "./app/utils/session";
-import { v4 as uuidv4 } from 'uuid';
+import { VerifyJwt } from "./app/lib/jwt"
+
+const BASE = process.env.NEXT_PUBLIC_API_URL
 
 export async function middleware(req){
+
     const {pathname} = req.nextUrl
 
+    // FIRST
     if (pathname.startsWith('/api') || pathname.startsWith('/_next')) {
-        return NextResponse.next();
+        return NextResponse.next()
     }
 
-    // Token bilgisi alınır
+    // TOKEN CONTROL
     const {value: accessToken} = req.cookies.get('accessToken') ?? {value: null}
     const {value: refreshToken} = req.cookies.get('refreshToken') ?? {value: null}
-    console.log(pathname)
-   
-    // Token kontrolü her zaman yapılır (Tokenin gerçek bir JWT olup olmadığı kontrol edilir)
     const payload = await VerifyJwt(accessToken)
 
-    // Token expire olmuş ise
+
+    // AUTHORIZATION CONTROL
+    if (pathname.startsWith('/create') || pathname.startsWith('/session') || pathname.startsWith('/oldsession')) {
+
+        if(!payload)
+        {
+            const url = new URL('/', req.url)
+            return NextResponse.redirect(url)
+        }
+    }
+
+    // SESSION CONTROL
+    if (pathname.startsWith('/session') && payload) 
+    {
+        const userId = payload.userId
+        const sessionId = req.nextUrl.pathname.split('/')[2]
+
+        const response = await fetch(`${BASE}/api/livesessions`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-User-Id': userId,
+                    'X-Session-Id': sessionId,
+                },
+            }
+        )
+
+        response.status == 200 ? NextResponse.next() : NextResponse.redirect('/')
+    }
+
+
+    // IF TOKEN EXPIRED
     if(payload && payload.error === 'expired')
     {
-        const res = await fetch("http://localhost:3000/api/token", {
+        const res = await fetch(`${BASE}/api/token`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -31,62 +62,62 @@ export async function middleware(req){
             credentials: 'include',
         })
 
-        const data = await res.json();
-        const newAccessToken = data.accessToken;
-        const newRefreshToken = data.refreshToken;
+        const data = await res.json()
+        const newAccessToken = data.accessToken
+        const newRefreshToken = data.refreshToken
 
-        const response = NextResponse.next();
+        const response = NextResponse.next()
 
         response.cookies.set('accessToken', newAccessToken, {
             httpOnly: true,
             secure: false,
             sameSite: 'lax',
             path: '/',
-            maxAge: 31536000, // 2 hours
-        });
+            maxAge: 31536000,
+        })
         response.cookies.set('refreshToken', newRefreshToken, {
             httpOnly: true,
             secure: false,
             sameSite: 'lax',
             path: '/',
-            maxAge: 31536000, // 1 year
-        });
+            maxAge: 31536000,
+        })
 
-        return response;
+        return response
     }
     
-    // Token yok veya geçerli değil ise
+    // IF TOKEN NOT EXIST OR VALID
     if(!payload)
     {
-        const response = await fetch("http://localhost:3000/api/user", {
-            method: 'GET',
+        const response = await fetch(`${BASE}/api/user`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
         })
         
         if (response.ok) {
-            const data = await response.json();
-            const accessToken = data.accessToken;
-            const refreshToken = data.refreshToken;
+            const data = await response.json()
+            const accessToken = data.accessToken
+            const refreshToken = data.refreshToken
 
-            // Yeni NextResponse oluştur ve cookie'yi ayarla
-            const res = NextResponse.next();
+            const res = NextResponse.next()
+
             res.cookies.set('accessToken', accessToken, {
                 httpOnly: true,
                 secure: false,
                 sameSite: 'lax',
                 path: '/',
                 maxAge: 31536000,
-            });
+            })
             res.cookies.set('refreshToken', refreshToken, {
                 httpOnly: true,
                 secure: false,
                 sameSite: 'lax',
                 path: '/',
                 maxAge: 31536000, // 1 year
-            });
-            return res;
+            })
+            return res
         }
     }
 
