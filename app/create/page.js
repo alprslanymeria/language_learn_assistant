@@ -1,55 +1,68 @@
-import SliderComponent from "@/app/components/SliderComponent";
-import { getSecretKey } from "@/app/lib/jwt";
-import { cookies } from "next/headers";
+import SliderComponent from "@/components/SliderComponent";
+import NavbarComponent from "@/components/NavbarComponent";
+import { useSearchParams } from "next/navigation";
+import { useEffect , useState } from "react";
+import { GetBooks } from "@/actions/book";
+import { GetFilms } from "@/actions/film";
 
-const BASE = process.env.NEXT_PUBLIC_API_URL
 
-export default async function Create({searchParams}) {
+export default function Create() {
 
-    const practice = searchParams.practice
-    const language = searchParams.language
-    const {value: accessToken} = (await cookies()).get('accessToken') ?? {value: null}
-    let data = []
+    const searchParams = useSearchParams();
+    const practice = searchParams.get("practice")
+    const language = searchParams.get("language")
     
-    //FOR SLIDER COMPONENT
-    const { payload } = await jwtVerify(accessToken, getSecretKey());
-    const userId = payload.userId;
+    const [data, setData] = useState([])
+    const [error, setError] = useState("")
 
-    //FETCH DATA
-    if(practice == 'reading' || practice == 'writing'){
+    useEffect(() => {   
 
-        const response = await fetch(`${BASE}/api/book?language=${language}&practice=${practice}`, {
-            method: 'GET',
-            headers: {
-            'Content-Type': 'application/json',
+        const GET = async () => {
+
+            if(practice == 'reading' || practice == 'writing')
+            {
+                const response = await GetBooks(language, practice)
+
+                if(response.status == 200)
+                    setData(response.data)
+
+                if(response.status == 500)
+                    setError("")
             }
-        })
 
-        data = await response.json()
+            if(practice == 'listening')
+            {
+                await GetFilms(language)
 
-    } else if(practice == 'listening'){
+                if(response.status == 200)
+                    setData(response.data)
 
-        const response = await fetch(`${BASE}/api/film?language=${language}`, {
-            method: 'GET',
-            headers: {
-            'Content-Type': 'application/json',
+                if(response.status == 500)
+                    setError("")
             }
-        })
 
-        data = await response.json()
+            if(practice == 'flashcards')
+            {
+                setData([
+                    "/images/flashcards/englishDeckBox.png",
+                    "/images/flashcards/turkishDeckBox.png",
+                    "/images/flashcards/germanDeckBox.png",
+                    "/images/flashcards/russianDeckBox.png",
+                ])
+            }
+        }
 
-    } else if(practice == 'flashcards'){
+        GET()
 
-        data = [
-            "/images/flashcards/englishDeckBox.png",
-            "/images/flashcards/turkishDeckBox.png",
-            "/images/flashcards/germanDeckBox.png",
-            "/images/flashcards/russianDeckBox.png",
-        ]
-    }
+    }, [])
 
     return (
-        <SliderComponent data={data} practice={practice} userId={userId}/>
+        <>
+            <div className="container max-w-screen-xl mx-auto px-4">
+                <NavbarComponent></NavbarComponent>
+            </div>
+            <SliderComponent data={data} practice={practice}/>
+        </>
     )
 
 }

@@ -1,39 +1,44 @@
-import InfoMessageComponent from '@/app/components/InfoMessageComponent'
-import { redirect } from 'next/dist/server/api-utils'
-import { cookies } from 'next/headers'
+"use client"
+
+import InfoMessageComponent from '@/components/InfoMessageComponent'
+import NavbarComponent from '@/components/NavbarComponent'
 import { markazi } from "@/public/fonts"
 import Link from 'next/link'
-
-const BASE = process.env.NEXT_PUBLIC_API_URL
+import { useEffect, useState, use } from 'react'
+import { GetOldSessions } from '@/actions/oldSessions'
 
 export default async function Practice({params}) {
 
-    const language = (await params).language
-    const practice = (await params).practice
-    const {value: accessToken} = (await cookies()).get('accessToken') ?? {value: null}
-    let data = []
+    const resolvedParams = use(params);
+    const language = resolvedParams.language
+    const practice = resolvedParams.practice
+    
+    const [oldSessions, setOldSessions] = useState([])
+    const [error, setError] = useState("")
 
-    const response = await fetch(`${BASE}/api/oldsessions?language=${language}&practice=${practice}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': accessToken,
-      },
-      credentials: 'include',
-    })
+    useEffect(() => {
+        const GET = async () => {
 
+            const response = await GetOldSessions(language, practice, userId)
 
-    if(response.status == 401)
-        redirect('/')
-    else if(response.status == 200)
-    {
-        data = await response.json()
-    }
+            if(response.status == 200)
+                setOldSessions(response.data)
+
+            if(response.status == 500)
+                setError(response.message)
+        }
+        
+        GET()
+        
+    }, [])
     
     return (
         <>
+            <div className="container max-w-screen-xl mx-auto px-4">
+                <NavbarComponent></NavbarComponent>
+            </div>
             <InfoMessageComponent message="On this page, you can see the work you have done in previous sessions or open a new session."></InfoMessageComponent>
-            {data.length == 0 ? (
+            {oldSessions.length == 0 ? (
                 <div style={{ textAlign: 'center', marginTop: '20px' }}>
                     <p className={`${markazi.className} mb-10 text-xl font-normal text-center`}>You Dont Have Any! Create One</p>
                     <Link href={`/create/?language=${language}&practice=${practice}`} passHref>
@@ -55,7 +60,7 @@ export default async function Practice({params}) {
             ) : (
                 <div style={{ backgroundColor: '#003366', padding: '20px', borderRadius: '10px', marginTop: '20px' }}>
                     <h2 style={{ color: 'white', marginBottom: '20px' }}>Previous Sessions</h2>
-                    {data.map((session, index) => (
+                    {oldSessions.map((session, index) => (
                         <div
                             key={index}
                             style={{

@@ -1,12 +1,13 @@
 import "@/public/globals.css"
-import NavbarComponent from "./components/NavbarComponent"
+import NavbarComponent from "@/components/NavbarComponent"
 
 export const metadata = {
   title: "Language Learn Assistant",
   description: "Made by Alparslan",
 }
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+
   return (
     <html lang="en">
       <head>
@@ -14,11 +15,8 @@ export default function RootLayout({ children }) {
         <meta name="description" content={metadata.description} />
       </head>
       <body>
-        <div className="container max-w-screen-xl mx-auto px-4">
-          <NavbarComponent></NavbarComponent>
-        </div>
         <div className="w-full">
-          {children}
+            {children}
         </div>
       </body>
     </html>

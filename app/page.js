@@ -1,11 +1,25 @@
-import FlagComponent from "./components/FlagComponent";
-import InfoMessageComponent from "./components/InfoMessageComponent";
+import AppInitializer from "@/components/AppInitializer";
+import { cookies } from "next/headers";
+import { decrypt } from "@/app/lib/session";
+import { GetUserById } from "@/actions/user";
 
-export default function Home() {
+export default async function Home() {
+
+  const cookie = (await cookies()).get("session")?.value;
+  const session = await decrypt(cookie);
+  let userId = "";
+
+  if(session)
+  {
+    userId = session.userId;
+  }
+
+  const response = await GetUserById(userId);
+  const user = response.data;
+
   return (
     <>
-      <InfoMessageComponent message="Please choose which language you would like to learn"></InfoMessageComponent>
-      <FlagComponent></FlagComponent>
+      <AppInitializer userr={user}></AppInitializer>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { jwtVerify, errors } from "jose";
+import { jwtVerify, errors } from "jose"
 
 // GET SECRET KEY
 export const getSecretKey = () => {

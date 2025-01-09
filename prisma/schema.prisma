@@ -8,70 +8,88 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  userId  String   @unique
-  refreshToken String
-  createdAt DateTime @default(now())
-  oldSessions OldSessions[]
-  liveSessions LiveSessions[]
+  id                Int      @id @default(autoincrement())
+  userId            String   @unique
+  email             String   @unique
+  password          String
+  refreshToken      String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime?
+
+  //REFERANS VERDİKLERİ
+  oldSessions       OldSession[]
+  liveSessions      LiveSession?
 }
 
 model Language {
-  id        Int      @id @default(autoincrement())
-  language String @unique
-  picture String @unique
-  practices Practice[] @relation("LanguageToPractice")
+  id                Int    @id @default(autoincrement())
+  language          String @unique
+  picturePath       String @unique
 
-  oldSessions OldSessions[]
-  books      Book[]
-  films      Film[]
+  //REFEREANS VERDİKLERİ
+  oldSessions       OldSession[]
+  books             Book[]
+  films             Film[]
+
+  //BOTH
+  practices         Practice[] @relation("LanguagePractices")
 }
 
 model Practice {
-  id Int @id @default(autoincrement())
-  practice String @unique
-  languages  Language[] @relation("LanguageToPractice")
-  oldSessions OldSessions[]
-}
+  id                Int @id @default(autoincrement())
+  practice          String
 
-model OldSessions {
-  id Int @id @default(autoincrement())
-  userId String
-  languageId String
-  practiceId String
-  createdOn DateTime @default(now())
-  rate Int
-  oldSessionId String
+  //REFERANS VERDİKLERİ
+  oldSessions       OldSession[]
 
-  user User @relation(fields: [userId], references: [userId])
-  language Language @relation(fields: [languageId], references: [language])
-  practice Practice @relation(fields: [practiceId], references: [practice])
-}
-
-model LiveSessions {
-  id Int @id @default(autoincrement())
-  liveSessionId String @unique
-  userId String
-
-  user User @relation(fields: [userId], references: [userId])
+  //BOTH
+  languages         Language[]  @relation("LanguagePractices")
 }
 
 model Book {
-  id Int @id @default(autoincrement())
-  languageId String @default("English")
-  bookName String @unique
-  imagePath String
-  sourcePath String @default("/pdfs/bulanti.pdf")
+  id                Int @id @default(autoincrement())
+  languageId        Int
+  bookName          String
+  imagePath         String
+  sourcePath        String
   
-  language Language @relation(fields: [languageId], references: [language])
+  //REFERANS ALDIKLARI
+  language Language @relation(fields: [languageId], references: [id])
 }
 
 model Film {
-  id Int @id @default(autoincrement())
-  languageId String @default("English")
-  filmName String @unique
-  imagePath String
-  sourcePath String @default("/films/video.mp4")
+  id                Int @id @default(autoincrement())
+  languageId        Int
+  filmName          String @unique
+  imagePath         String @unique
+  sourcePath        String
 
-  language Language @relation(fields: [languageId], references: [language])
+  //REFERANS ALDIKLARI
+  language Language @relation(fields: [languageId], references: [id])
+}
+
+
+model OldSession {
+  id                Int @id @default(autoincrement())
+  oldSessionId      String @unique
+  userId            Int
+  languageId        Int
+  practiceId        Int
+  createdOn         DateTime @default(now())
+  rate              Int
+
+  //REFERANS ALDIKLARI
+  user User @relation(fields: [userId], references: [id])
+  language Language @relation(fields: [languageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  practice Practice @relation(fields: [practiceId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+}
+
+
+model LiveSession {
+  id                Int @id @default(autoincrement())
+  liveSessionId     String @unique
+  userId            Int @unique
+
+  //REFERANS ALDIKLARI
+  user User @relation(fields: [userId], references: [id])
 }

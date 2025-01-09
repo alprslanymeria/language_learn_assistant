@@ -1,24 +1,42 @@
+"use client"
+
 import Link from "next/link"
 import { mitr } from "@/public/fonts"
-import InfoMessageComponent from "../components/InfoMessageComponent"
+import InfoMessageComponent from "@/components/InfoMessageComponent"
+import NavbarComponent from "@/components/NavbarComponent"
+import { useState, useEffect, use } from "react"
+import { GetPractices } from "@/actions/practice"
 
-const BASE = process.env.NEXT_PUBLIC_API_URL
 
-export default async function Language({params}) {
+export default function Language({params}) {
 
-    const language = (await params).language
-    const response = await fetch(`${BASE}/api/practice`,
-    {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
+    const resolvedParams = use(params);
+    const language = resolvedParams.language;
+
+    const [practices, setPractices] = useState([])
+    const [error, setError] = useState("")
+
+    useEffect(() => {
+        const GET = async () => {
+
+            const response = await GetPractices(language)
+
+            if(response.status == 200)
+                setPractices(response.data)
+
+            if(response.status == 500)
+                setError(response.message)
         }
-    })
-
-    const practices = await response.json()
+        
+        GET()
+        
+    }, [])
 
     return (
         <>
+        <div className="container max-w-screen-xl mx-auto px-4">
+            <NavbarComponent></NavbarComponent>
+        </div>
         <InfoMessageComponent message="Please choose which practice you would like to do"></InfoMessageComponent>
         {
             practices.map((item,index) => {
