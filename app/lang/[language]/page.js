@@ -42,7 +42,7 @@ export default function Language({params}) {
             practices.map((item,index) => {
                 return (
                     <div key={index} className="flex justify-center">
-                    <Link href={`/${language}/${item.practice}`}>
+                    <Link href={`/lang/${language}/${item.practice}`}>
                         <button
                         className={` ${mitr.className} w-64 text-xl mt-5 bg-[#B95DE5] text-white font-medium py-2 rounded-lg shadow-md shadow-[#ad49db] hover:bg-[#ad49db] transition-colors duration-300`}
                         >

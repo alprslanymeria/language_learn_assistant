@@ -1,22 +1,52 @@
+// import { create } from 'zustand'
+
+// export const userStore = create((set, get) => ({
+
+//     user: {
+//         userId: "",
+//         email: "",
+//     },
+
+//     setUser: (newUser) => set((state) => ({
+//         user: { ...state.user, ...newUser }
+//     })),
+
+//     setUserId: (userId) => set((state) => ({
+//         user: { ...state.user, userId }
+//     })),
+
+//     setEmail: (email) => set((state) => ({
+//         user: { ...state.user, email }
+//     }))
+
+// }))
+
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
-export const userStore = create((set, get) => ({
-
-    user: {
+export const userStore = create(
+  persist(
+    (set, get) => ({
+      user: {
         userId: "",
         email: "",
-    },
+      },
 
-    setUser: (newUser) => set((state) => ({
+      setUser: (newUser) => set((state) => ({
         user: { ...state.user, ...newUser }
-    })),
+      })),
 
-    setUserId: (userId) => set((state) => ({
+      setUserId: (userId) => set((state) => ({
         user: { ...state.user, userId }
-    })),
+      })),
 
-    setEmail: (email) => set((state) => ({
+      setEmail: (email) => set((state) => ({
         user: { ...state.user, email }
-    }))
-
-}))
+      }))
+    }),
+    {
+      name: 'user-storage',
+      getStorage: () => localStorage,
+    }
+  )
+)

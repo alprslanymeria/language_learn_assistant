@@ -72,14 +72,17 @@ model Film {
 model OldSession {
   id                Int @id @default(autoincrement())
   oldSessionId      String @unique
-  userId            Int
+  userId            String
   languageId        Int
   practiceId        Int
   createdOn         DateTime @default(now())
-  rate              Int
+  rate              Decimal
+
+  //REFERANS VERDİKLERİ
+  sentences         Sentence[]
 
   //REFERANS ALDIKLARI
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [userId])
   language Language @relation(fields: [languageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
   practice Practice @relation(fields: [practiceId], references: [id], onUpdate: NoAction, onDelete: NoAction)
 }
@@ -88,8 +91,20 @@ model OldSession {
 model LiveSession {
   id                Int @id @default(autoincrement())
   liveSessionId     String @unique
-  userId            Int @unique
+  userId            String @unique
 
   //REFERANS ALDIKLARI
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [userId])
+}
+
+model Sentence {
+  id                Int @id @default(autoincrement())
+  oldSessionId      String
+  original          String
+  own               String
+  translate         String
+  similarity        Decimal
+
+  //REFERANS ALDIKLARI
+  oldSession OldSession @relation(fields: [oldSessionId], references:[oldSessionId])
 }

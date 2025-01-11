@@ -1,3 +1,5 @@
+"use client"
+
 import SliderComponent from "@/components/SliderComponent";
 import NavbarComponent from "@/components/NavbarComponent";
 import { useSearchParams } from "next/navigation";
@@ -32,7 +34,7 @@ export default function Create() {
 
             if(practice == 'listening')
             {
-                await GetFilms(language)
+                const response = await GetFilms(language)
 
                 if(response.status == 200)
                     setData(response.data)
@@ -61,7 +63,7 @@ export default function Create() {
             <div className="container max-w-screen-xl mx-auto px-4">
                 <NavbarComponent></NavbarComponent>
             </div>
-            <SliderComponent data={data} practice={practice}/>
+            <SliderComponent data={data} practice={practice} language={language}/>
         </>
     )
 

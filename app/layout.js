@@ -1,5 +1,4 @@
 import "@/public/globals.css"
-import NavbarComponent from "@/components/NavbarComponent"
 
 export const metadata = {
   title: "Language Learn Assistant",

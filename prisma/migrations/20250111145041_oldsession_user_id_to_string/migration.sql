@@ -1,0 +1,25 @@
+BEGIN TRY
+
+BEGIN TRAN;
+
+-- DropForeignKey
+ALTER TABLE [dbo].[OldSession] DROP CONSTRAINT [OldSession_userId_fkey];
+
+-- AlterTable
+ALTER TABLE [dbo].[OldSession] ALTER COLUMN [userId] NVARCHAR(1000) NOT NULL;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[OldSession] ADD CONSTRAINT [OldSession_userId_fkey] FOREIGN KEY ([userId]) REFERENCES [dbo].[User]([userId]) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+COMMIT TRAN;
+
+END TRY
+BEGIN CATCH
+
+IF @@TRANCOUNT > 0
+BEGIN
+    ROLLBACK TRAN;
+END;
+THROW
+
+END CATCH

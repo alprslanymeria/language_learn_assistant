@@ -1,5 +1,6 @@
 "use client"
 
+import { encrypt } from "@/app/lib/crypto";
 import FlagComponent from "@/components/FlagComponent";
 import InfoMessageComponent from "@/components/InfoMessageComponent";
 import NavbarComponent from "@/components/NavbarComponent";
@@ -8,13 +9,15 @@ import { useEffect } from "react";
 
 export default function AppInitializer({ userr }) {
 
-    const { user, setUser, setUserId, setEmail } = userStore();
+    const {setUser} = userStore();
 
     useEffect(() => {
 
         if(userr != null)
         {
-            setUser({ userId: userr.id, email: userr.email });
+            const encryptedUserId = encrypt(userr.userId);
+            const encryptedEmail = encrypt(userr.email);
+            setUser({ userId: encryptedUserId, email: encryptedEmail });
         }
         
     }, [userr , setUser])

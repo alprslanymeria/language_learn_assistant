@@ -6,15 +6,22 @@ import { markazi } from "@/public/fonts"
 import Link from 'next/link'
 import { useEffect, useState, use } from 'react'
 import { GetOldSessions } from '@/actions/oldSessions'
+import { userStore } from '@/store/userStore'
+import { decrypt } from '@/app/lib/crypto'
+import oldSessionStore from '@/store/oldSessionStore'
 
-export default async function Practice({params}) {
+export default function Practice({params}) {
 
     const resolvedParams = use(params);
     const language = resolvedParams.language
     const practice = resolvedParams.practice
     
-    const [oldSessions, setOldSessions] = useState([])
+    const {oldSessions, setOldSessions} = oldSessionStore();
     const [error, setError] = useState("")
+
+    const { user } = userStore();
+    const userId = decrypt(user.userId);
+    
 
     useEffect(() => {
         const GET = async () => {
