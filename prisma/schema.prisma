@@ -30,6 +30,7 @@ model Language {
   oldSessions       OldSession[]
   books             Book[]
   films             Film[]
+  words             Word[]
 
   //BOTH
   practices         Practice[] @relation("LanguagePractices")
@@ -108,4 +109,14 @@ model Sentence {
 
   //REFERANS ALDIKLARI
   oldSession OldSession @relation(fields: [oldSessionId], references:[oldSessionId])
+}
+
+model Word {
+  id                Int @id @default(autoincrement())
+  languageId        Int
+  wordToLearn       String
+  translatedWord    String
+
+  //REFERANS ALDIKLARI
+  language Language @relation(fields: [languageId], references:[id])
 }

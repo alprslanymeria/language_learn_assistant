@@ -1,0 +1,28 @@
+BEGIN TRY
+
+BEGIN TRAN;
+
+-- CreateTable
+CREATE TABLE [dbo].[Word] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [languageId] INT NOT NULL,
+    [wordToLearn] NVARCHAR(1000) NOT NULL,
+    [translatedWord] NVARCHAR(1000) NOT NULL,
+    CONSTRAINT [Word_pkey] PRIMARY KEY CLUSTERED ([id])
+);
+
+-- AddForeignKey
+ALTER TABLE [dbo].[Word] ADD CONSTRAINT [Word_languageId_fkey] FOREIGN KEY ([languageId]) REFERENCES [dbo].[Language]([id]) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+COMMIT TRAN;
+
+END TRY
+BEGIN CATCH
+
+IF @@TRANCOUNT > 0
+BEGIN
+    ROLLBACK TRAN;
+END;
+THROW
+
+END CATCH

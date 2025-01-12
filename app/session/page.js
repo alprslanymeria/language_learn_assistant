@@ -10,6 +10,7 @@ import Reading from '@/components/Reading';
 import Writing from '@/components/Writing';
 import Listening from '@/components/Listening';
 import Flashcard from '@/components/Flashcard';
+import { GetWords } from '@/actions/word';
 
 export default function SessionPage({params}) {
 
@@ -68,7 +69,15 @@ export default function SessionPage({params}) {
 
             if(info.practice == "flashcards"){
 
-                // Tablodan kelime verileri çekilecek
+                const response = await GetWords(info.language);
+                if(response.status != 200)
+                {   
+                    setIsFlashcard(true)
+                    setError(response.message)
+                    return
+                }
+
+                setData(response.data)
                 setIsFlashcard(true)
             }
         }
@@ -90,7 +99,7 @@ export default function SessionPage({params}) {
                 <Listening></Listening>
                 :
                 isFlashcard ?
-                <Flashcard></Flashcard>
+                <Flashcard words={data}></Flashcard>
                 :
                 <div></div>
             }
