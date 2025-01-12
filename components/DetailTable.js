@@ -1,17 +1,13 @@
 "use client"
 
-import formStore from '@/store/formStore';
 import React, { useEffect } from 'react';
 
-export default function SentencesTable () {
-
-    const {sentences} = formStore();
+export default function DetailTable ({sentences}) {
     
     useEffect(() => {}, [sentences])
     
     return (
         <div className="mt-8 bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Sentences</h2>
             <table className="table-auto w-full border-collapse border border-gray-300">
                 <thead>
                     <tr className="bg-gray-100">

@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from "zustand";
 
 const formStore = create((set) => ({
     selectedText: '',
@@ -11,7 +11,7 @@ const formStore = create((set) => ({
     setInputText: (text) => set({ inputText: text }),
     setTranslatedText: (text) => set({ translatedText: text }),
     setShowTranslation: (show) => set({ showTranslation: show }),
-    setSentences: (newSentences) => set((state) => ({ sentences: [...state.sentences, ...newSentences] })),
+    setSentences: (newSentences) => set({ sentences: newSentences }), 
 }));
 
 export default formStore;

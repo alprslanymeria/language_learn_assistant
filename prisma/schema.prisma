@@ -76,6 +76,7 @@ model OldSession {
   languageId        Int
   practiceId        Int
   createdOn         DateTime @default(now())
+  imagePath         String
   rate              Decimal
 
   //REFERANS VERDİKLERİ

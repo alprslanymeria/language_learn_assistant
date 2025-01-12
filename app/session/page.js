@@ -66,7 +66,7 @@ export default function SessionPage({params}) {
                 setSourcePath(response.data.sourcePath)
             }
 
-            if(info.practice == "flashcard"){
+            if(info.practice == "flashcards"){
 
                 // Tablodan kelime verileri çekilecek
                 setIsFlashcard(true)

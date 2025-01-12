@@ -6,6 +6,7 @@ import React from 'react';
 import formStore from '@/store/formStore';
 import { userStore } from '@/store/userStore';
 import oldSessionStore from '@/store/oldSessionStore';
+import { sessionStore } from '@/store/sessionStore';
 //UTILS
 import { decrypt } from '@/app/lib/crypto';
 //ACTIONS
@@ -22,13 +23,14 @@ export default function FormComponent(){
     //STORES
     const {selectedText, inputText, translatedText, showTranslation, sentences} = formStore();
     const {setSelectedText, setInputText, setTranslatedText, setShowTranslation, setSentences} = formStore();
-    const {setOldSessions} = oldSessionStore();
+    const {oldSessions, setOldSessions} = oldSessionStore();
     const {info} = sessionStore();
     const {user} = userStore();
     const oldSessionId = decrypt(info.sessionId)
     const userId = decrypt(user.userId)
     const language = info.language
     const practice = info.practice
+    const imagePath = info.imagePath
 
     //FUNCTIONS
     const handleTextSelection = () => {
@@ -60,8 +62,8 @@ export default function FormComponent(){
             oldSessionId: oldSessionId,
             original: selectedText,
             own: inputText,
-            translate: text,
-            similarity: (similarity * 100).toFixed(2)
+            translate: translatedText.at(0),
+            similarity: similarity
         }
         setSentences([...sentences, sentence])
 
@@ -69,6 +71,7 @@ export default function FormComponent(){
         setSelectedText('');
         setInputText('');
         setTranslatedText('');
+        setShowTranslation(false);
     }
 
     const closeAndSave = async () => {
@@ -83,13 +86,14 @@ export default function FormComponent(){
             userId: userId,
             language: language,
             practice: practice,
-            rate: (averageRate * 100).toFixed(2)
+            rate: (averageRate * 100).toFixed(2),
+            imagePath: imagePath
         }
         const result = await SaveOldSession(row)
 
         if(result.status != 200)
         {
-            alert(result.message)
+            alert(result.details)
             return
         }
 
@@ -119,7 +123,14 @@ export default function FormComponent(){
             return
         }
 
-        setOldSessions(oldSessionResult.data)
+        setOldSessions([oldSessionResult.data])
+
+        //CLEAR STATES
+        setSelectedText('');
+        setInputText('');
+        setTranslatedText('');
+        setShowTranslation(false);
+        setSentences([])
 
         //REDIRECT TO HOME PAGE
         router.push('/')

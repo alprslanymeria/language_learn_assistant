@@ -25,3 +25,35 @@ export async function SaveSentences(sentences) {
         return {status: 500, message: "Sentences kaydedilirken bir hata oluştu", details: error.message}
     }
 }
+
+export async function GetSentencesById(id) {
+
+    try {
+        
+
+        //id ile oldSessionId bilgisini al
+        const oldSession = await prisma.oldSession.findFirst({
+            where: {
+                id: Number(id)
+            }
+        })
+
+        //Bu id bilgisini kullanarak sentence tablosundan verileri çek
+        const sentences = await prisma.sentence.findMany({
+            where: {
+                oldSessionId: oldSession.oldSessionId
+            }
+        })
+
+        const transformedSentences = sentences.map(sentence => ({
+            ...sentence,
+            similarity: sentence.similarity ? sentence.similarity.toString() : null
+        }));
+
+        return {data: transformedSentences, imagePath:oldSession.imagePath , status: 200}
+
+    } catch (error) {
+        
+        return {data: null, status: 500, message: "Sentences verileri çekilirken bir hata oluştu", details: error.message}
+    }
+}

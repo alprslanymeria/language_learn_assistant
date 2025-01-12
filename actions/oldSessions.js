@@ -8,13 +8,13 @@ export async function GetOldSessions(language, practice, userId) {
 
         const lang = await prisma.language.findFirst({
             where: {
-                languageId: language
+                language: language
             }
         })
 
         const prac = await prisma.practice.findFirst({
             where: {
-                practiceId: practice
+                practice: practice
             }
         })
         
@@ -29,8 +29,13 @@ export async function GetOldSessions(language, practice, userId) {
         if (!oldSessions || oldSessions.length === 0)
             return {data: null, status: 400, message: "Session verileri bulunamadı"}
 
-        return {data: oldSessions, status: 200}
+        const transformedSessions = oldSessions.map(session => ({
+            ...session,
+            createdOn: session.createdOn ? session.createdOn.toLocaleString() : null,
+            rate: session.rate ? session.rate.toString() : null
+        }));
 
+        return {data: transformedSessions, status: 200}
 
     } catch (error) {
         
@@ -44,13 +49,13 @@ export async function SaveOldSession(row)
 
         const lang = await prisma.language.findFirst({
             where: {
-                languageId: row.languageId
+                language: row.language
             }
         })
 
         const prac = await prisma.practice.findFirst({
             where: {
-                practiceId: row.practiceId
+                practice: row.practice
             }
         })
         
@@ -60,7 +65,8 @@ export async function SaveOldSession(row)
                 userId: row.userId,
                 languageId: lang.id,
                 practiceId: prac.id,
-                rate: row.rate
+                rate: row.rate,
+                imagePath: row.imagePath
             }
         })
 

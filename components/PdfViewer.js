@@ -36,7 +36,7 @@ export default function PdfViewer({ file }) {
             </div>
 
             <div>
-                <SentencesTable sentences={sentences}></SentencesTable>
+                <SentencesTable></SentencesTable>
             </div>
         </>
         

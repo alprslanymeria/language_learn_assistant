@@ -14,7 +14,7 @@ export default function Practice({params}) {
 
     const resolvedParams = use(params);
     const language = resolvedParams.language
-    const practice = resolvedParams.practice
+    const practice = resolvedParams.practice.at(0)
     
     const {oldSessions, setOldSessions} = oldSessionStore();
     const [error, setError] = useState("")
@@ -25,11 +25,13 @@ export default function Practice({params}) {
 
     useEffect(() => {
         const GET = async () => {
+            
+            setOldSessions([])
 
             const response = await GetOldSessions(language, practice, userId)
 
             if(response.status == 200)
-                setOldSessions(response.data)
+                setOldSessions([response.data])
 
             if(response.status == 500)
                 setError(response.message)
@@ -37,7 +39,7 @@ export default function Practice({params}) {
         
         GET()
         
-    }, [])
+    }, [language, practice, userId])
     
     return (
         <>
@@ -65,24 +67,44 @@ export default function Practice({params}) {
                     </Link>
                 </div>
             ) : (
-                <div style={{ backgroundColor: '#003366', padding: '20px', borderRadius: '10px', marginTop: '20px' }}>
-                    <h2 style={{ color: 'white', marginBottom: '20px' }}>Previous Sessions</h2>
-                    {oldSessions.map((session, index) => (
-                        <div
-                            key={index}
-                            style={{
-                                backgroundColor: 'white',
-                                padding: '15px',
-                                marginBottom: '10px',
-                                borderRadius: '5px',
-                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-                            }}
-                        >
-                            <p style={{ margin: 0, fontWeight: 'bold' }}>{session.createdOn}</p>
-                            <p style={{ margin: 0 }}>Rate: {session.rate}/100</p>
+                <>
+                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                        <p className={`${markazi.className} mb-10 text-xl font-normal text-center`}>You Have Session! Create Another One</p>
+                        <Link href={`/create/?language=${language}&practice=${practice}`} passHref>
+                            <button
+                                style={{
+                                    padding: '10px 20px',
+                                    fontSize: '16px',
+                                    backgroundColor: '#007BFF',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '5px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Create New Session
+                            </button>
+                        </Link>
+                    </div>
+                    <div className="container max-w-lg rounded-lg mx-auto bg-[#4D5B6C] p-5 mt-5">
+                        <div>
+                            {oldSessions.map(subArray => 
+                            subArray.map((session, index) => (
+                                <Link href={`/detail/?id=${session.id}`} passHref>
+                                    <div 
+                                        key={index}
+                                        className="flex justify-between bg-white p-4 mb-3 rounded shadow-sm"
+                                        >
+                                        <p className="text-gray-800">{session.createdOn}</p>
+                                        <p className="text-gray-600 m-0">Rate: {session.rate}/100</p>
+                                    </div>
+                                </Link>
+                            ))
+                            )}
                         </div>
-                    ))}
-                </div>
+                    </div>
+                </>
+                
             )}
         </>
     )
