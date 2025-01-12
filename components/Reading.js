@@ -1,7 +1,7 @@
 "use client"
 
-import NavbarComponent from "./NavbarComponent";
-import PdfViewer from "./PdfViewer";
+import NavbarComponent from "@/components/NavbarComponent";
+import PdfViewer from "@/components/PdfViewer";
 
 export default function Reading({file}) {
     return (

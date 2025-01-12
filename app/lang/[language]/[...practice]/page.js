@@ -9,6 +9,7 @@ import { GetOldSessions } from '@/actions/oldSessions'
 import { userStore } from '@/store/userStore'
 import { decrypt } from '@/app/lib/crypto'
 import oldSessionStore from '@/store/oldSessionStore'
+import { sessionStore } from '@/store/sessionStore'
 
 export default function Practice({params}) {
 
@@ -17,6 +18,7 @@ export default function Practice({params}) {
     const practice = resolvedParams.practice.at(0)
     
     const {oldSessions, setOldSessions} = oldSessionStore();
+    const {setImagePath} = sessionStore();
     const [error, setError] = useState("")
 
     const { user } = userStore();
@@ -26,8 +28,7 @@ export default function Practice({params}) {
     useEffect(() => {
         const GET = async () => {
             
-            setOldSessions([])
-
+            setImagePath("")
             const response = await GetOldSessions(language, practice, userId)
 
             if(response.status == 200)

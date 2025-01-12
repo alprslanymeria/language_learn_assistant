@@ -84,7 +84,7 @@ export default function SessionPage({params}) {
                 <Reading file={sourcePath}></Reading>
                 :
                 isWriting ?
-                <Writing></Writing>
+                <Writing file={sourcePath}></Writing>
                 :
                 isListening ?
                 <Listening></Listening>

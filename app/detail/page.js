@@ -43,14 +43,18 @@ export default function Detail()
             <div className="container max-w-screen-xl mx-auto px-4">
                 <NavbarComponent></NavbarComponent>
             </div>
-            <div className="relative h-[400px] w-[300px] mx-auto">
-                <Image 
-                    src={info.imagePath}
-                    fill
-                    alt="Book"
-                    className="rounded-lg"
-                    sizes="(max-width: 768px) 100vw, 50vw">
-                </Image>
+            <div className="relative h-[450px] w-[300px] mx-auto">
+                {info.imagePath == "" ? <p></p>
+                    :
+                    <Image 
+                        src={info.imagePath}
+                        fill
+                        alt="Book"
+                        className="rounded-lg"
+                        sizes="(max-width: 768px) 100vw, 50vw">
+                    </Image>
+                }
+                
             </div>
             
             <DetailTable sentences={data}></DetailTable>

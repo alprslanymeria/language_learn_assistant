@@ -6,6 +6,7 @@ import InfoMessageComponent from "@/components/InfoMessageComponent"
 import NavbarComponent from "@/components/NavbarComponent"
 import { useState, useEffect, use } from "react"
 import { GetPractices } from "@/actions/practice"
+import oldSessionStore from "@/store/oldSessionStore"
 
 
 export default function Language({params}) {
@@ -16,9 +17,12 @@ export default function Language({params}) {
     const [practices, setPractices] = useState([])
     const [error, setError] = useState("")
 
+    const {setOldSessions} = oldSessionStore();
+
     useEffect(() => {
         const GET = async () => {
 
+            setOldSessions([])
             const response = await GetPractices(language)
 
             if(response.status == 200)

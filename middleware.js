@@ -6,7 +6,7 @@ import { checkLiveSession } from "./actions/liveSession";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL
 
-const protectedRoutes = ["/create", "/session", "/lang"];
+const protectedRoutes = ["/create", "/session", "/lang", "/detail"];
 const publicRoutes = ["/login", "/signup"];
 
 export default async function middleware(req){
