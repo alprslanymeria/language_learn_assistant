@@ -6,13 +6,13 @@ export async function GetWords(language)
     try {
         
         //GET LANGUAGE ID
-        const lang = await prisma.language.FindFirst({
+        const lang = await prisma.language.findFirst({
             where: {
                 language: language
             }
         })
 
-        const words = await prisma.word.FindMany({
+        const words = await prisma.word.findMany({
             where: {
                 languageId: lang.id
             }

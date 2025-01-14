@@ -20,12 +20,15 @@ export default function Practice({params}) {
     const {oldSessions, setOldSessions} = oldSessionStore();
     const {setImagePath} = sessionStore();
     const [error, setError] = useState("")
+    const {setInfo} = sessionStore();
 
     const { user } = userStore();
     const userId = decrypt(user.userId);
     
 
     useEffect(() => {
+
+        setInfo({language: language, practice: practice })
         const GET = async () => {
             
             setImagePath("")

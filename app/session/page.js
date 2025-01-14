@@ -99,7 +99,7 @@ export default function SessionPage({params}) {
                 <Listening></Listening>
                 :
                 isFlashcard ?
-                <Flashcard words={data}></Flashcard>
+                <Flashcard data={data}></Flashcard>
                 :
                 <div></div>
             }

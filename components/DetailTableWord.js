@@ -5,15 +5,13 @@ import React, { useEffect } from 'react';
 import CheckIcon from '@/public/svg/check.svg';
 import FailIcon from '@/public/svg/fail.svg';
 
-export default function WordTable () {
+export default function DetailTableWord ({words}) {
 
-    const {words} = wordStore();
     
     useEffect(() => {}, [words])
     
     return (
-        <div className="bg-white w-full mx-10">
-            <h2 className="text-xl text-center font-semibold mb-4">WORDS</h2>
+        <div className="bg-white w-full mt-5">
             <table className="table-auto w-full border-collapse border border-gray-300">
                 <thead>
                     <tr className="bg-gray-100">

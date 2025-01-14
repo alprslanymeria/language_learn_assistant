@@ -82,6 +82,7 @@ model OldSession {
 
   //REFERANS VERDİKLERİ
   sentences         Sentence[]
+  wordSessions      WordSession[]
 
   //REFERANS ALDIKLARI
   user User @relation(fields: [userId], references: [userId])
@@ -119,4 +120,15 @@ model Word {
 
   //REFERANS ALDIKLARI
   language Language @relation(fields: [languageId], references:[id])
+}
+
+model WordSession {
+  id                Int @id @default(autoincrement())
+  oldSessionId      String
+  word              String
+  answer            String
+  status            Boolean
+
+  //REFERANS ALDIKLARI
+  oldSession OldSession @relation(fields: [oldSessionId], references:[oldSessionId])
 }

@@ -7,6 +7,8 @@ import { sessionStore } from "@/store/sessionStore";
 import DetailTable from "@/components/DetailTable";
 import NavbarComponent from "@/components/NavbarComponent";
 import { useSearchParams } from "next/navigation";
+import DetailTableWord from "@/components/DetailTableWord";
+import { GetWordsById } from "@/actions/wordSession";
 
 export default function Detail()
 {
@@ -21,16 +23,33 @@ export default function Detail()
 
         const GET = async () => {
 
-            const response = await GetSentencesById(id)
-
-            if(response.status == 200)
+            if(info.practice == "reading" || info.practice == "writing")
             {
-                setData(response.data)
-                setImagePath(response.imagePath)
+                const response = await GetSentencesById(id)
+
+                if(response.status == 200)
+                {
+                    setData(response.data)
+                    setImagePath(response.imagePath)
+                }
+    
+                if(response.status == 500)
+                    setError(response.message)
             }
 
-            if(response.status == 500)
-                setError(response.message)
+            if(info.practice == "flashcards")
+            {
+                const response = await GetWordsById(id)
+
+                if(response.status == 200)
+                {
+                    setData(response.data)
+                    setImagePath(response.imagePath)
+                }
+    
+                if(response.status == 500)
+                    setError(response.message)
+            }
         }
 
         GET()
@@ -57,7 +76,9 @@ export default function Detail()
                 
             </div>
             
-            <DetailTable sentences={data}></DetailTable>
+            {
+            info.practice == "reading" || info.practice == "writing" ? <DetailTable sentences={data}></DetailTable> :
+             info.practice == "flashcards" ? <DetailTableWord words={data}></DetailTableWord> : <p></p>}
         </>
     );
 }
