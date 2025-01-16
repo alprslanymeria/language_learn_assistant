@@ -1,13 +1,3 @@
-// import { create } from "zustand";
-
-// const oldSessionStore = create((set) => ({
-//     oldSessions: [],
-//     setOldSessions: (newOldSession) => set({ oldSessions: newOldSession }), 
-// }));
-
-// export default oldSessionStore;
-
-
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

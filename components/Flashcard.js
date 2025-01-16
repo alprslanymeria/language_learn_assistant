@@ -17,14 +17,13 @@ import { decrypt } from "@/app/lib/crypto";
 import { GetOldSessions, SaveOldSession } from "@/actions/oldSessions";
 import { SaveWords } from "@/actions/wordSession";
 import { DeleteLiveSession } from "@/actions/liveSession";
-import oldSessionStore from "@/store/oldSessionStore";
 import { useRouter } from "next/navigation";
+import RussianFull from "./svg/russianFull";
 
 export default function Flashcard({data}) {
 
     const router = useRouter();
 
-    const {setOldSessions} = oldSessionStore();
     const {info} = sessionStore()
     const {user} = userStore();
     const userId = decrypt(user.userId)
@@ -138,16 +137,6 @@ export default function Flashcard({data}) {
             return
         }
 
-        //UPDATE OLDSESSIONS
-        const oldSessionResult = await GetOldSessions(info.language, info.practice, userId)
-        if(oldSessionResult.status != 200)
-        {
-            alert(oldSessionResult.message)
-            return
-        }
-
-        setOldSessions([oldSessionResult.data])
-
         //CLEAR STATES
         setWords([])
 
@@ -171,7 +160,7 @@ export default function Flashcard({data}) {
                         {isEnglish ? (isShow ? <EnglishHalf text1={text1}/> : <EnglishFull text1={text1} text2={text2}/>) :
                          isTurkish ? (isShow ? <TurkishHalf text1={text1}/> : <TurkishFull text1={text1} text2={text2}/>) :
                          isGerman ? (isShow ? <GermanHalf text1={text1}/> : <GermanFull text1={text1} text2={text2}/>) :
-                         isRussian ? (isShow ? <RussianHalf text1={text1}/> : <RussianHalf text1={text1} text2={text2}/>) : null}
+                         isRussian ? (isShow ? <RussianHalf text1={text1}/> : <RussianFull text1={text1} text2={text2}/>) : null}
 
                     </div>
                     <div className="flex flex-col items-start h-full space-y-4 ml-4">

@@ -5,7 +5,6 @@ import React from 'react';
 //STORES
 import formStore from '@/store/formStore';
 import { userStore } from '@/store/userStore';
-import oldSessionStore from '@/store/oldSessionStore';
 import { sessionStore } from '@/store/sessionStore';
 //UTILS
 import { decrypt } from '@/app/lib/crypto';
@@ -23,7 +22,6 @@ export default function FormComponent(){
     //STORES
     const {selectedText, inputText, translatedText, showTranslation, sentences} = formStore();
     const {setSelectedText, setInputText, setTranslatedText, setShowTranslation, setSentences} = formStore();
-    const {oldSessions, setOldSessions} = oldSessionStore();
     const {info} = sessionStore();
     const {user} = userStore();
     const oldSessionId = decrypt(info.sessionId)
@@ -114,16 +112,6 @@ export default function FormComponent(){
             alert(deleteResult.message)
             return
         }
-
-        //UPDATE OLDSESSIONS
-        const oldSessionResult = await GetOldSessions(language, practice, userId)
-        if(oldSessionResult.status != 200)
-        {
-            alert(oldSessionResult.message)
-            return
-        }
-
-        setOldSessions([oldSessionResult.data])
 
         //CLEAR STATES
         setSelectedText('');

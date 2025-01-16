@@ -19,7 +19,7 @@ export default async function Home() {
 
   return (
     <>
-      <AppInitializer userr={user}></AppInitializer>
+      <AppInitializer user={user}></AppInitializer>
     </>
   );
 }

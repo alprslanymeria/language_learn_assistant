@@ -42,7 +42,7 @@ export default function Language({params}) {
             <NavbarComponent></NavbarComponent>
         </div>
         <InfoMessageComponent message="Please choose which practice you would like to do"></InfoMessageComponent>
-        {
+        {error != "" ? <InfoMessageComponent message={error}></InfoMessageComponent> :
             practices.map((item,index) => {
                 return (
                     <div key={index} className="flex justify-center">
