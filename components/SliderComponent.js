@@ -1,12 +1,16 @@
 "use client"
 
-import { saveLiveSession } from "@/actions/liveSession";
-import { encrypt } from "@/app/lib/crypto";
-import { sessionStore } from "@/store/sessionStore";
-import { userStore } from "@/store/userStore";
+// REACT & NEXT
+import { useState } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+// STORE
+import { sessionStore } from "@/store/sessionStore";
+import { userStore } from "@/store/userStore";
+// ACTIONS
+import { saveLiveSession } from "@/actions/liveSession";
+// 3RD PARTY
+import { encrypt } from "@/app/lib/crypto";
 import { v4 as uuidv4 } from 'uuid';
 
 export default function SliderComponent({data, practice, language}) {
@@ -21,7 +25,7 @@ export default function SliderComponent({data, practice, language}) {
 
     //FUNCTIONS
     const getImageUrl = (item) => practice === 'flashcards' ? item : item.imagePath
-    const eventHandler = async (e) => {
+    const buttonHandler = async (e) => {
         
         e.preventDefault();
         
@@ -30,8 +34,7 @@ export default function SliderComponent({data, practice, language}) {
 
         if(response.status != 200)
         {
-            // Birhata oluştuğunu belirten alert gösterilsin ve 2 saniye bekledikten sonra ana sayfaya yönlendirilsin
-            alert('Bir hata oluştu, lütfen tekrar deneyin.');
+            alert('ZATEN BİR SESSION HALİ HAZIRDA MEVCUT.. ANA SAYFAYA YÖNLENDİRİLİYORSUNUZ..');
             setTimeout(() => {
                 router.push('/');
             }, 2000); 
@@ -90,13 +93,11 @@ export default function SliderComponent({data, practice, language}) {
                         )}
                     </div>
                 ))}
-
-
             </div>
         </div>
 
         <div className="w-full flex justify-center mb-2">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg" onClick={eventHandler}>CHOOSE</button>
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg" onClick={buttonHandler}>CHOOSE</button>
         </div>
     </>
        

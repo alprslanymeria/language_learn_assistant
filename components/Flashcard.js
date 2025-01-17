@@ -1,24 +1,29 @@
 "use client"
 
-import { sessionStore } from "@/store/sessionStore";
+// REACT & NEXT
 import { useEffect, useState } from "react";
-import NavbarComponent from "@/components/NavbarComponent";
-import TurkishHalf from "./svg/turkishHalf";
-import TurkishFull from "./svg/turkishFull";
-import EnglishHalf from "./svg/englishHalf";
-import EnglishFull from "./svg/englishFull";
-import GermanHalf from "./svg/germanHalf";
-import GermanFull from "./svg/germanFull";
-import RussianHalf from "./svg/russianHalf";
-import WordTable from "./wordTable";
-import wordStore from "@/store/wordStore";
-import { userStore } from "@/store/userStore";
-import { decrypt } from "@/app/lib/crypto";
-import { GetOldSessions, SaveOldSession } from "@/actions/oldSessions";
+import { useRouter } from "next/navigation";
+// ACTIONS
+import { SaveOldSession } from "@/actions/oldSessions";
 import { SaveWords } from "@/actions/wordSession";
 import { DeleteLiveSession } from "@/actions/liveSession";
-import { useRouter } from "next/navigation";
-import RussianFull from "./svg/russianFull";
+// STORE
+import { sessionStore } from "@/store/sessionStore";
+import wordStore from "@/store/wordStore";
+import { userStore } from "@/store/userStore";
+// COMPONENTS
+import TurkishFull from "@/components/svg/turkishFull";
+import TurkishHalf from "@/components/svg/turkishHalf";
+import EnglishFull from "@/components/svg/englishFull";
+import EnglishHalf from "@/components/svg/englishHalf";
+import GermanFull from "@/components/svg/germanFull";
+import GermanHalf from "@/components/svg/germanHalf";
+import RussianFull from "@/components/svg/russianFull";
+import RussianHalf from "@/components/svg/russianHalf";
+import WordTable from "@/components/wordTable";
+// 3RD PARTY
+import { decrypt } from "@/app/lib/crypto";
+
 
 export default function Flashcard({data}) {
 
@@ -29,32 +34,39 @@ export default function Flashcard({data}) {
     const userId = decrypt(user.userId)
     const oldSessionId = decrypt(info.sessionId)
     const {words, setWords} = wordStore();
-    const [isEnglish , setIsEnglish] = useState(false)
-    const [isTurkish , setIsTurkish] = useState(false)
-    const [isGerman , setIsGerman] = useState(false)
-    const [isRussian , setIsRussian] = useState(false)
-    const [isShow, setIsShow] = useState(true)
-    const [showNextButton, setShowNextButton] = useState(false)
-    const [showCloseButton, setShowCloseButton] = useState(false)
 
+    const [isShow, setIsShow] = useState(true)
     const [text1, setText1] = useState("")
     const [text2, setText2] = useState("")
     const [index, setIndex] = useState(0)
+
+    const componentMap = {
+        english: (isShow ? <EnglishHalf text1={text1}/> : <EnglishFull text1={text1} text2={text2}/>),
+        turkish: (isShow ? <TurkishHalf text1={text1}/> : <TurkishFull text1={text1} text2={text2}/>),
+        german: (isShow ? <GermanHalf text1={text1}/> : <GermanFull text1={text1} text2={text2}/>),
+        russian: (isShow ? <RussianHalf text1={text1}/> : <RussianFull text1={text1} text2={text2}/>)
+    }
+
+    const [activeComponent, setActiveComponent] = useState("")
+
+    const [showNextButton, setShowNextButton] = useState(false)
+    const [showCloseButton, setShowCloseButton] = useState(false)
+
+    
 
     useEffect(() => {
 
         setText1(data.at(index).wordToLearn)
         setText2(data.at(index).translatedWord)
-        info.imagePath.includes("english") ? setIsEnglish(true) : setIsEnglish(false);
-        info.imagePath.includes("turkish") ? setIsTurkish(true) : setIsTurkish(false);
-        info.imagePath.includes("german") ? setIsGerman(true) : setIsGerman(false);
-        info.imagePath.includes("russian") ? setIsRussian(true) : setIsRussian(false);
+        info.imagePath.includes("english") ? setActiveComponent("english") : null;
+        info.imagePath.includes("turkish") ? setActiveComponent("turkish") : null;
+        info.imagePath.includes("german") ? setActiveComponent("german") : null;
+        info.imagePath.includes("russian") ? setActiveComponent("russian") : null;
     }, [])
 
     
+    const handleClick = (status) => {
 
-    const handleYesClick = () => {
-        
         setIndex(index+1)
         setIsShow(!isShow)
         setShowNextButton(true)
@@ -63,23 +75,7 @@ export default function Flashcard({data}) {
             oldSessionId: oldSessionId,
             word: text1,
             answer: text2,
-            status: true
-        }
-        setWords([...words, word])
-
-    }
-
-    const handleNoClick = () => {
-        
-        setIndex(index+1)
-        setIsShow(!isShow)
-        setShowNextButton(true)
-
-        const word = {
-            oldSessionId: oldSessionId,
-            word: text1,
-            answer: text2,
-            status: false
+            status: status
         }
         setWords([...words, word])
     }
@@ -137,9 +133,6 @@ export default function Flashcard({data}) {
             return
         }
 
-        //CLEAR STATES
-        setWords([])
-
         //REDIRECT TO HOME PAGE
         router.push('/')
     }
@@ -147,39 +140,29 @@ export default function Flashcard({data}) {
     
     return (
 
-        <>
-            <div className="container max-w-screen-xl mx-auto px-4">
-                <NavbarComponent />
-            </div>
-            <div className="container flex justify-between max-w-screen-xl mx-auto px-4">
-                
-                <div className="flex justify-between max-w-screen-xl mx-auto px-4">
+        <div className="container flex justify-between max-w-screen-xl mx-auto px-4">
+            
+            <div className="flex justify-between max-w-screen-xl mx-auto px-4">
 
-                    <div className="flex justify-between items-end h-[600px]">
-
-                        {isEnglish ? (isShow ? <EnglishHalf text1={text1}/> : <EnglishFull text1={text1} text2={text2}/>) :
-                         isTurkish ? (isShow ? <TurkishHalf text1={text1}/> : <TurkishFull text1={text1} text2={text2}/>) :
-                         isGerman ? (isShow ? <GermanHalf text1={text1}/> : <GermanFull text1={text1} text2={text2}/>) :
-                         isRussian ? (isShow ? <RussianHalf text1={text1}/> : <RussianFull text1={text1} text2={text2}/>) : null}
-
-                    </div>
-                    <div className="flex flex-col items-start h-full space-y-4 ml-4">
-                        {showCloseButton ? <button onClick={handleCloseClick} className="h-full px-4 py-2 bg-yellow-500 text-white rounded min-w-[70px]">Close</button> 
-                        
-                        : showNextButton ? <button onClick={handleNextClick} className="h-full px-4 py-2 bg-blue-500 text-white rounded min-w-[70px]">Next</button> 
-                        :
-                        <>
-                            <button onClick={handleYesClick} className="h-1/2 px-4 py-2 bg-green-500 text-white rounded min-w-[70px]">YES</button>
-                            <button onClick={handleNoClick} className="h-1/2 px-4 py-2 bg-red-500 text-white rounded min-w-[70px]">NO</button>
-                        </>
-                        }
-                        
-                    </div>
-
+                <div className="flex justify-between items-end h-[600px]">
+                    {componentMap[activeComponent]}
                 </div>
-                <WordTable/>
-            </div>
-        </>
 
+                <div className="flex flex-col items-start h-full space-y-4 ml-4">
+                    {showCloseButton ? <button onClick={handleCloseClick} className="h-full px-4 py-2 bg-yellow-500 text-white rounded min-w-[70px]">Close</button> 
+                    
+                    : showNextButton ? <button onClick={handleNextClick} className="h-full px-4 py-2 bg-blue-500 text-white rounded min-w-[70px]">Next</button> 
+                    :
+                    <>
+                        <button onClick={()=> handleClick(true)} className="h-1/2 px-4 py-2 bg-green-500 text-white rounded min-w-[70px]">YES</button>
+                        <button onClick={() => handleClick(false)} className="h-1/2 px-4 py-2 bg-red-500 text-white rounded min-w-[70px]">NO</button>
+                    </>
+                    }
+                    
+                </div>
+
+            </div>
+            <WordTable/>
+        </div>
     );
 }

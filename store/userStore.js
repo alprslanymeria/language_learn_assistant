@@ -6,7 +6,7 @@ export const userStore = create(
     (set, get) => ({
       user: {
         userId: "",
-        email: "",
+        email: ""
       },
 
       setUser: (newUser) => set((state) => ({
@@ -20,6 +20,8 @@ export const userStore = create(
       setEmail: (email) => set((state) => ({
         user: { ...state.user, email }
       }))
+
+
     }),
     {
       name: 'user-storage',

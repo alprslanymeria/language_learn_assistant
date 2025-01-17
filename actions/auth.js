@@ -123,10 +123,17 @@ export async function login(prevState, formData) {
 
   await createSession(user.userId);
 
-  if(returnUrl == "")
-    redirect("/");
+  return {
+    success: true,
+    email: email,
+    userId: user.userId,
+    redirectUrl: returnUrl || "/",
+  };
 
-  redirect(`${returnUrl}`);
+  // if(returnUrl == "")
+  //   redirect("/");
+
+  // redirect(`${returnUrl}`);
 }
 
 

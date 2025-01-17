@@ -1,36 +1,35 @@
 "use client"
 
-import { decrypt } from '@/app/lib/crypto';
-import { sessionStore } from '@/store/sessionStore';
-import { useSearchParams } from 'next/navigation';
-import { GetBook } from '@/actions/book';
+// REACT & NEXT
 import { useEffect , useState} from 'react';
-import { GetFilm } from '@/actions/film';
+// COMPONENTS
 import Reading from '@/components/Reading';
 import Writing from '@/components/Writing';
 import Listening from '@/components/Listening';
 import Flashcard from '@/components/Flashcard';
+// ACTIONS
+import { GetBook } from '@/actions/book';
+import { GetFilm } from '@/actions/film';
 import { GetWords } from '@/actions/word';
+// STORE
+import { sessionStore } from '@/store/sessionStore';
 
-export default function SessionPage({params}) {
-
-    const searchParams  = useSearchParams();
-    const safeUrl = searchParams.get('id');
+export default function SessionPage() {
 
     // GET INFOS FROM ZUSTAND
     const {info} = sessionStore();
 
-    // DECRYPT THE SESSION ID
-    const encryptedSessionId = decodeURIComponent(safeUrl)
-    const sessionId = decrypt(encryptedSessionId)
-
+    const [activeComponent, setActiveComponent] = useState("")
     const [data, setData] = useState([])
     const [error, setError] = useState("")
-    const [isReading, setIsReading] = useState(false)
-    const [isWriting, setIsWriting] = useState(false)
-    const [isListening, setIsListening] = useState(false)
-    const [isFlashcard, setIsFlashcard] = useState(false)
     const [sourcePath, setSourcePath] = useState("")
+
+    const componentMap = {
+        reading: <Reading file={sourcePath} />,
+        writing: <Writing file={sourcePath} />,
+        listening: <Listening />,
+        flashcards: <Flashcard data={data} />,
+    }
 
     useEffect(() => {
 
@@ -38,8 +37,8 @@ export default function SessionPage({params}) {
 
             if(info.practice == "reading" || info.practice == "writing") {
                 
-                if(info.practice == "reading") setIsReading(true)
-                if(info.practice == "writing") setIsWriting(true)
+                if(info.practice == "reading") setActiveComponent("reading")
+                if(info.practice == "writing") setActiveComponent("writing")
 
                 const response = await GetBook(info.practice, info.language, info.imagePath)
                 if(response.status != 200)
@@ -57,13 +56,13 @@ export default function SessionPage({params}) {
                 const response = await GetFilm(info.language, info.imagePath);
                 if(response.status != 200)
                 {
-                    setIsListening(true)
+                    setActiveComponent("listening")
                     setError(response.message)
                     return
                 }
 
                 setData(response.data)
-                setIsListening(true)
+                setActiveComponent("listening")
                 setSourcePath(response.data.sourcePath)
             }
 
@@ -72,13 +71,13 @@ export default function SessionPage({params}) {
                 const response = await GetWords(info.language);
                 if(response.status != 200)
                 {   
-                    setIsFlashcard(true)
+                    setActiveComponent("flashcards")
                     setError(response.message)
                     return
                 }
 
                 setData(response.data)
-                setIsFlashcard(true)
+                setActiveComponent("flashcards")
             }
         }
 
@@ -86,24 +85,9 @@ export default function SessionPage({params}) {
     }, [info])
 
     return (
+        
         <div>
-            
-            {
-                isReading ?
-                <Reading file={sourcePath}></Reading>
-                :
-                isWriting ?
-                <Writing file={sourcePath}></Writing>
-                :
-                isListening ?
-                <Listening></Listening>
-                :
-                isFlashcard ?
-                <Flashcard data={data}></Flashcard>
-                :
-                <div></div>
-            }
+            {componentMap[activeComponent] || <div></div>}
         </div>
-
     );
 }

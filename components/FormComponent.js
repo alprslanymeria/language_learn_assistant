@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
 //STORES
-import formStore from '@/store/formStore';
+import sentenceStore from '@/store/sentenceStore';
 import { userStore } from '@/store/userStore';
 import { sessionStore } from '@/store/sessionStore';
 //UTILS
@@ -20,8 +20,8 @@ export default function FormComponent(){
     const router = useRouter();
 
     //STORES
-    const {selectedText, inputText, translatedText, showTranslation, sentences} = formStore();
-    const {setSelectedText, setInputText, setTranslatedText, setShowTranslation, setSentences} = formStore();
+    const {selectedText, inputText, translatedText, showTranslation, sentences} = sentenceStore();
+    const {setSelectedText, setInputText, setTranslatedText, setShowTranslation, setSentences} = sentenceStore();
     const {info} = sessionStore();
     const {user} = userStore();
     const oldSessionId = decrypt(info.sessionId)
@@ -112,13 +112,6 @@ export default function FormComponent(){
             alert(deleteResult.message)
             return
         }
-
-        //CLEAR STATES
-        setSelectedText('');
-        setInputText('');
-        setTranslatedText('');
-        setShowTranslation(false);
-        setSentences([])
 
         //REDIRECT TO HOME PAGE
         router.push('/')

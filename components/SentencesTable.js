@@ -1,11 +1,11 @@
 "use client"
 
-import formStore from '@/store/formStore';
+import sentenceStore from '@/store/sentenceStore';
 import React, { useEffect } from 'react';
 
 export default function SentencesTable () {
 
-    const {sentences} = formStore();
+    const {sentences} = sentenceStore();
     
     useEffect(() => {}, [sentences])
     

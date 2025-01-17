@@ -1,25 +1,15 @@
-import AppInitializer from "@/components/AppInitializer";
-import { cookies } from "next/headers";
-import { decrypt } from "@/app/lib/session";
-import { GetUserById } from "@/actions/user";
+"use client"
 
-export default async function Home() {
+// COMPONENTS
+import InfoMessageComponent from "@/components/InfoMessageComponent";
+import FlagComponent from "@/components/FlagComponent";
 
-  const cookie = (await cookies()).get("session")?.value;
-  const session = await decrypt(cookie);
-  let userId = "";
-
-  if(session)
-  {
-    userId = session.userId;
-  }
-
-  const response = await GetUserById(userId);
-  const user = response.data;
+export default function Home() {
 
   return (
     <>
-      <AppInitializer user={user}></AppInitializer>
+        <InfoMessageComponent message="Please choose which language you would like to learn"></InfoMessageComponent>
+        <FlagComponent></FlagComponent>
     </>
   );
 }
