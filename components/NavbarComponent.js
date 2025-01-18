@@ -14,6 +14,7 @@ export default function NavbarComponent() {
 
 
     const { user} = userStore();
+    const userId = decrypt(user.userId)
     const [email, setLocalEmail] = useState("");
     
 
@@ -38,7 +39,7 @@ export default function NavbarComponent() {
                 <p className={`text-lg sm:text-3xl md:text-5xl font-normal tracking-widest text-black text-left ${neuton.className}`}>
                     LANGUAGE LEARN ASSISTANT
                 </p>
-                <Email email={email}></Email>
+                <Email email={email} userId={userId}></Email>
             </div>
         </nav>
     )
