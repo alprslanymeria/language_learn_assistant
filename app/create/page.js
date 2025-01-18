@@ -25,7 +25,7 @@ export default function Create() {
 
     //STORE
     const {setSelectedText, setInputText, setTranslatedText, setShowTranslation, setSentences} = sentenceStore();
-    const {setWords} = wordStore();
+    const {setWords, setIndex} = wordStore();
 
     useEffect(() => {   
 
@@ -36,6 +36,8 @@ export default function Create() {
         setShowTranslation(false);
         setSentences([]);
         setWords([])
+        setIndex(0)
+
 
         const GET = async () => {
 

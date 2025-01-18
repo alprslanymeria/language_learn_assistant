@@ -27,12 +27,11 @@ export default function Flashcard({data}) {
     const {user} = userStore();
     const userId = decrypt(user.userId)
     const oldSessionId = decrypt(info.sessionId)
-    const {words, setWords} = wordStore();
+    const {words, setWords, index, setIndex} = wordStore();
 
     const [isShow, setIsShow] = useState(true)
     const [text1, setText1] = useState("")
     const [text2, setText2] = useState("")
-    const [index, setIndex] = useState(0)
 
 
     const [showNextButton, setShowNextButton] = useState(false)
