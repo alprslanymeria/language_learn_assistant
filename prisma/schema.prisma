@@ -8,30 +8,35 @@ datasource db {
 }
 
 model User {
-  id                Int      @id @default(autoincrement())
   userId            String   @unique
   email             String   @unique
   password          String
   refreshToken      String?
   createdAt         DateTime @default(now())
-  updatedAt         DateTime?
+  updatedAt         DateTime
 
   //REFERANS VERDİKLERİ
   oldSessions       OldSession[]
   liveSessions      LiveSession?
+  books             Book[]
+  films             Film[]
+  deckCategories    FlashcardCategory[]
+  words             Word[]
+  sessionSentences  SessionSentence[]
+  SessionWords      SessionWord[]
 }
 
 model Language {
   id                Int    @id @default(autoincrement())
   language          String @unique
-  picturePath       String @unique
+  picturePath       String
 
   //REFEREANS VERDİKLERİ
-  oldSessions           OldSession[]
   books                 Book[]
   films                 Film[]
-  flashcardCategories   FlashcardCategory[]
   words                 Word[]
+  oldSessions           OldSession[]
+  flashcardCategories   FlashcardCategory[]
 
   //BOTH
   practices         Practice[] @relation("LanguagePractices")
@@ -50,35 +55,52 @@ model Practice {
 
 model Book {
   id                Int @id @default(autoincrement())
+  userId            String
   languageId        Int
   bookName          String
   imagePath         String
   sourcePath        String
   
   //REFERANS ALDIKLARI
+  user User @relation(fields: [userId], references: [userId])
   language Language @relation(fields: [languageId], references: [id])
 }
 
 model Film {
   id                Int @id @default(autoincrement())
+  userId            String
   languageId        Int
   filmName          String @unique
   imagePath         String @unique
   sourcePath        String
 
   //REFERANS ALDIKLARI
+  user User @relation(fields: [userId], references: [userId])
   language Language @relation(fields: [languageId], references: [id])
 }
 
 model FlashcardCategory {
   id                Int @id @default(autoincrement())
+  userId            String
   languageId        Int
-  categoryName          String @unique
+  categoryName      String @unique
 
   //REFERANS ALDIKLARI
+  user User @relation(fields: [userId], references: [userId])
   language Language @relation(fields: [languageId], references: [id])
 }
 
+model Word {
+  id                Int @id @default(autoincrement())
+  userId            String
+  languageId        Int
+  wordToLearn       String
+  translatedWord    String
+
+  //REFERANS ALDIKLARI
+  user User @relation(fields: [userId], references: [userId])
+  language Language @relation(fields: [languageId], references:[id])
+}
 
 model OldSession {
   id                Int @id @default(autoincrement())
@@ -91,15 +113,14 @@ model OldSession {
   rate              Decimal
 
   //REFERANS VERDİKLERİ
-  sentences         Sentence[]
-  wordSessions      WordSession[]
+  sessionSentences  SessionSentence[]
+  sessionWord       SessionWord[]
 
   //REFERANS ALDIKLARI
   user User @relation(fields: [userId], references: [userId])
   language Language @relation(fields: [languageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
   practice Practice @relation(fields: [practiceId], references: [id], onUpdate: NoAction, onDelete: NoAction)
 }
-
 
 model LiveSession {
   id                Int @id @default(autoincrement())
@@ -110,8 +131,9 @@ model LiveSession {
   user User @relation(fields: [userId], references: [userId])
 }
 
-model Sentence {
+model SessionSentence {
   id                Int @id @default(autoincrement())
+  userId            String
   oldSessionId      String
   original          String
   own               String
@@ -119,26 +141,19 @@ model Sentence {
   similarity        Decimal
 
   //REFERANS ALDIKLARI
+  user User @relation(fields: [userId], references: [userId], onUpdate: NoAction, onDelete: NoAction)
   oldSession OldSession @relation(fields: [oldSessionId], references:[oldSessionId])
 }
 
-model Word {
+model SessionWord {
   id                Int @id @default(autoincrement())
-  languageId        Int
-  wordToLearn       String
-  translatedWord    String
-
-  //REFERANS ALDIKLARI
-  language Language @relation(fields: [languageId], references:[id])
-}
-
-model WordSession {
-  id                Int @id @default(autoincrement())
+  userId            String
   oldSessionId      String
   word              String
   answer            String
   status            Boolean
 
   //REFERANS ALDIKLARI
+  user User @relation(fields: [userId], references: [userId], onUpdate: NoAction, onDelete: NoAction)
   oldSession OldSession @relation(fields: [oldSessionId], references:[oldSessionId])
 }
