@@ -121,15 +121,16 @@ export default function Flashcard({data}) {
     
     return (
 
-        <div className="container flex justify-between max-w-screen-xl mx-auto px-4">
+    
+        <div className="container flex flex-col md:flex-row justify-between max-w-screen-xl mx-auto px-4">
             
-            <div className="flex justify-between max-w-screen-xl mx-auto px-4">
+            <div className="flex flex-col md:flex-row justify-between max-w-screen-xl mx-auto px-4">
 
-                <div className="flex justify-between items-end h-[600px]">
+                <div className="flex justify-between items-end h-[373px] sm:h-[486px] md:h-[600px]">
                     {isShow  ? <DeckHalfSvg language={info.language} text1={text1}/> : <DeckFullSvg language={info.language} text1={text1} text2={text2}/> }
                 </div>
 
-                <div className="flex flex-col items-start h-full space-y-4 ml-4">
+                <div className="flex flex-row md:flex-col my-6 md:my-0 justify-center gap-5 items-center md:items-center h-full ml-4">
                     {showCloseButton ? <button onClick={handleCloseClick} className="h-full px-4 py-2 bg-yellow-500 text-white rounded min-w-[70px]">Close</button> 
                     
                     : showNextButton ? <button onClick={handleNextClick} className="h-full px-4 py-2 bg-blue-500 text-white rounded min-w-[70px]">Next</button> 

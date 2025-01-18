@@ -1,10 +1,10 @@
 import React from 'react';
 import { markazi } from '@/public/fonts';
 
-const DeckSvg = ({ text, language }) => {
+const DeckSvg = ({width, height, text, language }) => {
   return (
 
-    <svg width="300" height="487" viewBox="0 0 442 628" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg className='w-[200px] h-[324px] sm:w-[250px] sm:h-[406px] md:w-[300px] md:h-[487px]' viewBox="0 0 442 628" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M439 580L78.5 625L3 580V60.5L387.5 3L439 60.5V580Z" fill="#D9D9D9"/>
     <path d="M78.5 120L439 60.5M78.5 120L3 60.5M78.5 120V625M78.5 625L439 580V60.5M78.5 625L3 580V60.5M439 60.5L387.5 3L3 60.5" stroke="black" stroke-width="5"/>
     <path d="M103.5 373.75V148L415 92V325.5M103.5 373.75V599.5L415 559V325.5M103.5 373.75L156 365.618C237.499 254.044 281.725 246.965 358 334.329L415 325.5" stroke="white" stroke-width="10"/>

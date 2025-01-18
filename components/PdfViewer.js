@@ -17,9 +17,9 @@ export default function PdfViewer({ file }) {
     
     return (
         <>
-            <div className="flex gap-8 bg-gray-50 ">
+            <div className="flex flex-col items-center lg:flex-row lg:items-start gap-8 bg-gray-50 ">
                 {/* PDF Viewer Section */}
-                <div className="w-1/2  bg-white overflow-hidden">
+                <div className="w-[300px] sm:w-[400px] md:w-[600px] lg:w-1/2  bg-white overflow-hidden">
                     <div className="h-[600px] overflow-y-auto">
                         <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
                             <Viewer

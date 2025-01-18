@@ -35,11 +35,11 @@ export default function NavbarComponent() {
     return (
 
         <nav className="bg-[#F4CC15] px-5 py-5 my-5 rounded-lg">
-            <div className="flex items-center justify-between">
-                <p className={`text-lg sm:text-3xl md:text-5xl font-normal tracking-widest text-black text-left ${neuton.className}`}>
+            <div className="flex flex-wrap items-center justify-between">
+                <p className={`text-lg sm:text-2xl md:text-4xl font-normal tracking-widest text-black text-left ${neuton.className}`}>
                     LANGUAGE LEARN ASSISTANT
                 </p>
-                <Email email={email} userId={userId}></Email>
+                {/* <Email email={email} userId={userId}></Email> */}
             </div>
         </nav>
     )

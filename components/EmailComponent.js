@@ -35,6 +35,7 @@ export default function Email({email, userId}){
         }
 
         setUser({ userId: "", email: ""});
+        toggleDropdown();
         await logout();
         router.push("/")
     }
@@ -44,12 +45,12 @@ export default function Email({email, userId}){
         <div className="flex items-center space-x-4">
             {email === "empty" ? (
                 <>
-                    <Link className="bg-blue-500 text-white px-4 py-2 rounded-lg" href="/login">Login</Link>
-                    <Link className="bg-green-500 text-white px-4 py-2 rounded-lg" href="/signup">Signup</Link>
+                    <Link className="bg-blue-500 text-white px-2 py-1 rounded-lg" href="/login">Login</Link>
+                    <Link className="bg-green-500 text-white px-2 py-1 rounded-lg" href="/signup">Signup</Link>
                 </>
             ) : (
                 <div className="relative">
-                    <button onClick={toggleDropdown} className="text-black px-4 py-2 rounded-lg">
+                    <button onClick={toggleDropdown} className="text-black px-2 py-1 rounded-lg">
                         {email}
                     </button>
                     {dropdownOpen && (

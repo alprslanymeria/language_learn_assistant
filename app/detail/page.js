@@ -65,13 +65,13 @@ export default function Detail()
 
     }, [id])
 
-    return(
+    return (
         
-        <>
-            <div className="relative h-[450px] w-[300px] mx-auto">
+        <div className="container max-w-screen-xl mx-auto flex flex-col md:flex-row px-4 gap-10">
+            <div className="relative h-[450px] flex-none w-[300px] self-center md:self-start">
                 {info.imagePath == "" ? <p></p>
                     :
-                    <Image 
+                    <Image
                         src={info.imagePath}
                         fill
                         alt="Image"
@@ -79,11 +79,12 @@ export default function Detail()
                         sizes="(max-width: 768px) 100vw, 50vw">
                     </Image>
                 }
-                
             </div>
             
-            {info.practice == "reading" || info.practice == "writing" ? <SentencesTable/> :
-             info.practice == "flashcards" ? <WordTable/> : <p></p>}
-        </>
+            <div className="flex-[2]">
+                {info.practice == "reading" || info.practice == "writing" ? <SentencesTable/> :
+                info.practice == "flashcards" ? <WordTable/> : <p></p>}
+            </div>
+        </div>
     );
 }

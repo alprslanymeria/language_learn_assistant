@@ -61,14 +61,14 @@ export default function SliderComponent({data, practice, language}) {
    return (
     <>
         <div className="flex justify-center w-full">
-            <div className="carousel rounded-box flex md:flex-row flex-col space-y-4 md:space-y-0 md:space-x-4 gap-5 h-[550px] overflow-y-auto items-center px-10">
+            <div className={`carousel rounded-box flex md:flex-row flex-col space-y-4 md:space-y-0 md:space-x-4 gap-5 h-[550px] overflow-y-auto items-center px-10`}>
                 {data.map((item, index) => (
                     <div
                         key={index}
                         className={`carousel-item flex-shrink-0 cursor-pointer transform transition-all duration-300 ${
                             practice === 'listening'
-                                ? 'w-[400px] flex flex-col'
-                                : 'w-[300px] h-[487px] relative'
+                                ? 'w-[200px] sm:w-[300px] md:w-[400px] flex flex-col'
+                                : 'w-[200px] h-[324px] sm:w-[250px] sm:h-[406px] md:w-[300px] md:h-[487px] relative'
                         } ${
                             selectedImageUrl === getImageUrl(item)
                             ? 'scale-110'
@@ -77,10 +77,11 @@ export default function SliderComponent({data, practice, language}) {
                         onClick={() => setSelectedImageUrl(getImageUrl(item))}
                     >
                         {practice === 'flashcards' ? (
+                            
                             <DeckSvg text={item} language={language}></DeckSvg>
                         ) : practice === 'listening' ? (
                             <>
-                                <div className="relative h-[400px] w-full">
+                                <div className="relative h-[200px] sm:h-[300px] md:h-[400px] w-full">
                                     <Image
                                         src={item.imagePath}
                                         fill
@@ -96,7 +97,7 @@ export default function SliderComponent({data, practice, language}) {
                                 src={getImageUrl(item)}
                                 fill
                                 alt={item.id}
-                                sizes="(max-width: 768px) 100vw, 50vw"
+                                sizes="(max-width: 768px) 80vw, 30vw"
                                 className="rounded-lg"
                             />
                         )}
@@ -105,63 +106,11 @@ export default function SliderComponent({data, practice, language}) {
             </div>
         </div>
 
-        <div className="w-full flex justify-center mb-2">
+        <div className="w-full flex justify-center my-2">
             <button className="bg-blue-500 text-white px-4 py-2 rounded-lg" onClick={buttonHandler}>CHOOSE</button>
         </div>
     </>
 )
- 
-//    return (
-//     <>
-//         <div className="flex justify-center w-full">
-//             <div className="carousel rounded-box flex md:flex-row flex-col space-y-4 md:space-y-0 md:space-x-4 gap-5 h-[550px] overflow-y-auto items-center px-10">
-//                 {data.map((item,index) => (
-//                     <div
-//                         key={index}
-//                         className={`carousel-item flex-shrink-0 cursor-pointer transform transition-all duration-300 ${
-//                             practice === 'listening'
-//                                 ? 'w-[400px] flex flex-col'
-//                                 : 'w-[300px] h-[487px] relative'
-//                         } ${
-//                             selectedImageUrl === getImageUrl(item)
-//                             ? 'scale-110'
-//                             : 'hover:scale-102'
-//                         }`}
-//                         onClick={() => setSelectedImageUrl(getImageUrl(item))}
-//                     >
-//                         {practice === 'listening' ? (
-//                             <>
-//                                 <div className="relative h-[400px] w-full">
-//                                     <Image
-//                                         src={item.imagePath}
-//                                         fill
-//                                         alt={item.id}
-//                                         className="rounded-lg"
-//                                         sizes="(max-width: 768px) 100vw, 50vw"
-//                                     />
-//                                 </div>
-//                                 <p className="text-center mt-2 text-lg font-medium">{item.filmName}</p>
-//                             </>
-//                         ) : (
-//                             <Image
-//                                 src={getImageUrl(item)}
-//                                 fill
-//                                 alt={item.id}
-//                                 sizes="(max-width: 768px) 100vw, 50vw"
-//                                 className={practice !== 'flashcards' ? "rounded-lg" : ""}
-//                             />
-//                         )}
-//                     </div>
-//                 ))}
-//             </div>
-//         </div>
-
-//         <div className="w-full flex justify-center mb-2">
-//             <button className="bg-blue-500 text-white px-4 py-2 rounded-lg" onClick={buttonHandler}>CHOOSE</button>
-//         </div>
-//     </>
-       
-//    )
 }
 
 

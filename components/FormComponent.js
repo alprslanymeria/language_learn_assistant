@@ -119,7 +119,7 @@ export default function FormComponent(){
 
     return (
 
-        <div className="w-1/2">
+        <div className="w-[300px] sm:w-[400px] md:w-[600px] lg:w-1/2">
             <div className="bg-white">
                 <div className="space-y-4">
                     <textarea
@@ -144,11 +144,11 @@ export default function FormComponent(){
                         />
                     )}
 
-                    <div className='flex gap-4'>
-                        <button onClick={handleTextSelection} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">Select Text</button>
-                        <button onClick={handleTranslate} className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">Translate</button>
-                        <button onClick={calculateRate} className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">Calculate</button>
-                        <button onClick={closeAndSave} className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">Close & Save</button>
+                    <div className='flex flex-wrap gap-4 justify-around'>
+                        <button onClick={handleTextSelection} className="w-full lg:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded-lg transition duration-200">Select Text</button>
+                        <button onClick={handleTranslate} className="w-full lg:w-auto bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-3 rounded-lg transition duration-200">Translate</button>
+                        <button onClick={calculateRate} className="w-full lg:w-auto bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 rounded-lg transition duration-200">Calculate</button>
+                        <button onClick={closeAndSave} className="w-full lg:w-auto bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 px-3 rounded-lg transition duration-200">Close & Save</button>
                     </div>
                 </div>
             </div>
