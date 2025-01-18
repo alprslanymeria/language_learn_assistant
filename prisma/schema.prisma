@@ -27,10 +27,11 @@ model Language {
   picturePath       String @unique
 
   //REFEREANS VERDİKLERİ
-  oldSessions       OldSession[]
-  books             Book[]
-  films             Film[]
-  words             Word[]
+  oldSessions           OldSession[]
+  books                 Book[]
+  films                 Film[]
+  flashcardCategories   FlashcardCategory[]
+  words                 Word[]
 
   //BOTH
   practices         Practice[] @relation("LanguagePractices")
@@ -64,6 +65,15 @@ model Film {
   filmName          String @unique
   imagePath         String @unique
   sourcePath        String
+
+  //REFERANS ALDIKLARI
+  language Language @relation(fields: [languageId], references: [id])
+}
+
+model FlashcardCategory {
+  id                Int @id @default(autoincrement())
+  languageId        Int
+  categoryName          String @unique
 
   //REFERANS ALDIKLARI
   language Language @relation(fields: [languageId], references: [id])

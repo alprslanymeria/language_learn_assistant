@@ -64,10 +64,10 @@ export default function Create() {
             if(practice == 'flashcards')
             {
                 setData([
-                    "/images/flashcards/englishDeckBox.png",
-                    "/images/flashcards/turkishDeckBox.png",
-                    "/images/flashcards/germanDeckBox.png",
-                    "/images/flashcards/russianDeckBox.png",
+                    "Verb",
+                    "Adjective",
+                    "Noun",
+                    "Adverb"
                 ])
             }
         }
