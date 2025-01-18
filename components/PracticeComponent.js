@@ -15,13 +15,12 @@ import InfoMessageComponent from '@/components/InfoMessageComponent'
 // ACTIONS
 import { GetOldSessions } from '@/actions/oldSessions'
 
-
-export default function Practice({params}) {
+export default function PracticeComponent({language, practice}) {
 
     // GET SLUGS
-    const resolvedParams = use(params);
-    const language = resolvedParams.language
-    const practice = resolvedParams.practice.at(0)
+    // const resolvedParams = use(params);
+    // const language = resolvedParams.language
+    // const practice = resolvedParams.practice.at(0)
 
     // STORE
     const {oldSessions, setOldSessions} = oldSessionStore();
@@ -54,8 +53,9 @@ export default function Practice({params}) {
         GET()
         
     }, [language, practice, userId])
-    
+
     return (
+
         <>
             <InfoMessageComponent message="On this page, you can see the work you have done in previous sessions or open a new session."></InfoMessageComponent>
             <div style={{ textAlign: 'center', marginTop: '20px' }}>
@@ -99,5 +99,5 @@ export default function Practice({params}) {
                 : null
             }
         </>
-    )
+    );
 }

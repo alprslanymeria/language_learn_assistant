@@ -32,10 +32,32 @@ export async function encrypt(payload) {
 
 export async function decrypt(session) {
   try {
+
     const { payload } = await jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
     });
-    return payload;
+
+    if(payload != null)
+    {
+      const response = await fetch(`http://localhost:3000/api/check?userId=${payload.userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+
+      if(response.status != 200)
+      {
+        (await cookies()).delete("session");
+        return null;
+      }
+
+      
+
+      return payload;
+    }
+
+    return null;
   } catch (error) {
     console.log("Failed to verify session");
   }

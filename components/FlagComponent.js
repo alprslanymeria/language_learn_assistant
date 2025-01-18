@@ -53,7 +53,7 @@ export default function FlagComponent() {
                 }
             </div>
             <div className="flex justify-center mt-4">
-                <Link href={`/lang/${selected}`}>
+                <Link href={`/lang?language=${selected}`}>
                     <button
                     className={` ${mitr.className} mt-20 bg-[#58CC02] text-white font-medium py-3 px-20 rounded-lg shadow-md shadow-[#58A700] hover:bg-[#58A700] transition-colors duration-300`}
                     >

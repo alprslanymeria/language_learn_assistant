@@ -12,12 +12,11 @@ import InfoMessageComponent from "@/components/InfoMessageComponent"
 // STORE
 import oldSessionStore from "@/store/oldSessionStore"
 
-
-export default function Language({params}) {
+export default function LanguageComponent({language}) {
 
     // GET SLUGS
-    const resolvedParams = use(params);
-    const language = resolvedParams.language;
+    // const resolvedParams = use(params);
+    // const language = resolvedParams.language;
 
     // STATES
     const [practices, setPractices] = useState([])
@@ -49,17 +48,17 @@ export default function Language({params}) {
             {practices.map((item,index) => {
                     return (
                         <div key={index} className="flex justify-center">
-                            <Link href={`/lang/${language}/${item.practice}`}>
+                            <a href={`/lang?language=${language}&practice=${item.practice}`}>
                                 <button
                                 className={` ${mitr.className} w-64 text-xl mt-5 bg-[#B95DE5] text-white font-medium py-2 rounded-lg shadow-md shadow-[#ad49db] hover:bg-[#ad49db] transition-colors duration-300`}
                                 >
                                 {item.practice}
                                 </button>
-                            </Link>
+                            </a>
                         </div>
                     )
                 })
             }
         </>
-    )
+    );
 }
