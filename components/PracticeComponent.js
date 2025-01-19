@@ -17,14 +17,8 @@ import { GetOldSessions } from '@/actions/oldSessions'
 
 export default function PracticeComponent({language, practice}) {
 
-    // GET SLUGS
-    // const resolvedParams = use(params);
-    // const language = resolvedParams.language
-    // const practice = resolvedParams.practice.at(0)
-
     // STORE
     const {oldSessions, setOldSessions} = oldSessionStore();
-    const {setImagePath} = sessionStore();
     const {setInfo} = sessionStore();
     const { user } = userStore();
 
@@ -37,10 +31,9 @@ export default function PracticeComponent({language, practice}) {
 
     useEffect(() => {
 
-        setInfo({language: language, practice: practice })
+        setInfo({language: language, practice: practice, imagePath: "" })
         const GET = async () => {
             
-            setImagePath("")
             const response = await GetOldSessions(language, practice, userId)
 
             if(response.status == 200)

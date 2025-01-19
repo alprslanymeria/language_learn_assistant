@@ -86,8 +86,8 @@ export default function Flashcard({data}) {
             userId: userId,
             language: info.language,
             practice: info.practice,
+            imagePath: info.categoryName,
             rate: 0,
-            imagePath: info.imagePath
         }
         const result = await SaveOldSession(row)
 
@@ -111,7 +111,7 @@ export default function Flashcard({data}) {
 
         if(deleteResult.status != 200)
         {
-            alert(deleteResult.message)
+            alert(deleteResult.details)
             return
         }
 
@@ -128,7 +128,7 @@ export default function Flashcard({data}) {
             <div className="flex flex-col md:flex-row justify-between max-w-screen-xl mx-auto px-4">
 
                 <div className="flex justify-between items-end h-[373px] sm:h-[486px] md:h-[600px]">
-                    {isShow  ? <DeckHalfSvg language={info.language} text1={text1}/> : <DeckFullSvg language={info.language} text1={text1} text2={text2}/> }
+                    {isShow  ? <DeckHalfSvg language={info.language} text1={text1} category={info.categoryName}/> : <DeckFullSvg language={info.language} text1={text1} text2={text2} category={info.categoryName}/> }
                 </div>
 
                 <div className="flex flex-row md:flex-col my-6 md:my-0 justify-center gap-5 items-center md:items-center h-full ml-4">

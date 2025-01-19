@@ -85,8 +85,8 @@ export default function FormComponent(){
             userId: userId,
             language: language,
             practice: practice,
+            imagePath: imagePath,
             rate: (averageRate * 100).toFixed(2),
-            imagePath: imagePath
         }
         const result = await SaveOldSession(row)
 

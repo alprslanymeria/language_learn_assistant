@@ -26,3 +26,22 @@ export async function GetWords(language, userId)
         return {data: null,  status: 500, message:"Kelimeler alınırken bir hata oluştu" , details: error.message}
     }
 }
+
+
+export async function GetAllWords(userId)
+{
+    try {
+
+        const words = await prisma.word.findMany({
+            where: {
+                userId: userId
+            }
+        })
+
+        return {data: words, status: 200}
+
+    } catch (error) {
+        
+        return {data: null,  status: 500, message:"Kelimeler alınırken bir hata oluştu" , details: error.message}
+    }
+}

@@ -7,8 +7,9 @@ export const sessionStore = create(
       info: {
         language: "",
         practice: "",
-        imagePath: "",
-        sessionId: ""
+        selectedImagePath: "",
+        sessionId: "",
+        categoryName: ""
       },
 
       setInfo: (newInfo) => set((state) => ({

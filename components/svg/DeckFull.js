@@ -1,6 +1,8 @@
 import React from 'react';
+import { markazi } from '@/public/fonts';
 
-const DeckFullSvg = ({ text1, text2, language }) => {
+
+const DeckFullSvg = ({ text1, text2, language, category }) => {
   return (
 
     <svg className='w-[200px] h-[373px] sm:w-[261px] sm:h-[486px] md:w-[322px] md:h-[600px]' width="322" height="600" viewBox="0 0 442 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -69,6 +71,8 @@ const DeckFullSvg = ({ text1, text2, language }) => {
     
     <text x="225" y="150" fill="black" fontSize="40" fontFamily="Arial" transform="rotate(-6, 225, 150)" textAnchor="middle" dominantBaseline="middle">{text1}</text>
     <text x="225" y="330" fill="black" fontSize="40" fontFamily="Arial" transform="rotate(-6, 225, 330)" textAnchor="middle" dominantBaseline="middle">{text2}</text>
+    <text className={`${markazi.className}`} x="250" y="925" fill="black" fontSize="60" fontFamily="Arial" transform="rotate(-6, 225, 925)" textAnchor="middle" dominantBaseline="middle">{category}</text>
+
     </svg>
 
   );

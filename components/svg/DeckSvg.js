@@ -1,7 +1,9 @@
+"use client"
+
 import React from 'react';
 import { markazi } from '@/public/fonts';
 
-const DeckSvg = ({width, height, text, language }) => {
+const DeckSvg = ({text, language}) => {
   return (
 
     <svg className='w-[200px] h-[324px] sm:w-[250px] sm:h-[406px] md:w-[300px] md:h-[487px]' viewBox="0 0 442 628" fill="none" xmlns="http://www.w3.org/2000/svg">

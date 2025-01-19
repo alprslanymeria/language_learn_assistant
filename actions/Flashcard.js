@@ -34,3 +34,21 @@ export async function GetCategories(language, userId){
         return {data: null, status: 500, message: "Kategoriler getirilirken bir hata oluştu..", details: error.message}
     }
 }
+
+export async function GetAllCategories(userId){
+
+    try {
+
+        const categories = await prisma.flashcardCategory.findMany({
+            where:{
+                userId: userId
+            }
+        })
+
+        return {data: categories, status: 200}
+
+    } catch (error) {
+        
+        return {data: null, status: 500, message: "Kategoriler getirilirken bir hata oluştu..", details: error.message}
+    }
+}

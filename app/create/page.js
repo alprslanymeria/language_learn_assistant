@@ -81,7 +81,7 @@ export default function Create() {
 
         GET()
 
-    }, [])
+    }, [userId])
 
     return (
         <>

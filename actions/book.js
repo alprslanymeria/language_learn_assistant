@@ -10,6 +10,8 @@ export async function GetBooks(language, practice, userId){
                 language: language
             }
         })
+
+        let imagePaths = []
         
         // FOR WRITING
         if(practice == 'writing')
@@ -21,13 +23,42 @@ export async function GetBooks(language, practice, userId){
                 }
             })
 
-            return {data: books, status: 200}
+            books.map((item) => {
+
+                imagePaths.push(item.imagePath)
+            })
+
+            return {data: imagePaths, status: 200}
         }
 
         // FOR READING
         const books = await prisma.book.findMany({
             where: {
                 languageId: lang.id,
+                userId: userId
+            }
+        })
+
+        books.map((item) => {
+
+            imagePaths.push(item.imagePath)
+        })
+
+        return {data: imagePaths, status: 200}
+
+    } catch (error) {
+        
+        return {data: null, status: 500, message: "Kitap verileri alınırken bir hata oluştu", details: error.message}
+    }
+
+}
+
+export async function GetAllBooks(userId){
+
+    try {
+
+        const books = await prisma.book.findMany({
+            where: {
                 userId: userId
             }
         })

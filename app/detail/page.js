@@ -14,6 +14,9 @@ import WordTable from "@/components/wordTable";
 import { sessionStore } from "@/store/sessionStore";
 import sentenceStore from "@/store/sentenceStore";
 import wordStore from "@/store/wordStore";
+import DeckSvg from "@/components/svg/DeckSvg";
+import FilmSvg from "@/components/svg/FilmSvg";
+import BookSvg from "@/components/svg/BookSvg";
 
 export default function Detail()
 {
@@ -21,8 +24,8 @@ export default function Detail()
     const searchParams = useSearchParams()
     const id = searchParams.get('id')
     // STATES
-    const [data, setData] = useState([]);
     const [error, setError] = useState("");
+    const [image, setImage] = useState("");
     // STORE
     const {info, setImagePath} = sessionStore();
     const {setSentences} = sentenceStore();
@@ -39,7 +42,7 @@ export default function Detail()
                 if(response.status == 200)
                 {
                     setSentences(response.data)
-                    setImagePath(response.imagePath)
+                    setImage(response.imagePath)
                 }
     
                 if(response.status == 500)
@@ -53,7 +56,7 @@ export default function Detail()
                 if(response.status == 200)
                 {
                     setWords(response.data)
-                    setImagePath(response.imagePath)
+                    setImage(response.imagePath)
                 }
     
                 if(response.status == 500)
@@ -69,16 +72,13 @@ export default function Detail()
         
         <div className="container max-w-screen-xl mx-auto flex flex-col md:flex-row px-4 gap-10">
             <div className="relative h-[450px] flex-none w-[300px] self-center md:self-start">
-                {info.imagePath == "" ? <p></p>
-                    :
-                    <Image
-                        src={info.imagePath}
-                        fill
-                        alt="Image"
-                        className="rounded-lg"
-                        sizes="(max-width: 768px) 100vw, 50vw">
-                    </Image>
-                }
+
+                {info.practice == 'flashcards'
+                 ? <DeckSvg language={info.language} text={image}></DeckSvg>
+                 : info.practice == 'listening'
+                 ? <FilmSvg imagePath={image} index={0}></FilmSvg>
+                 : <BookSvg imagePath={image}></BookSvg>}
+                 
             </div>
             
             <div className="flex-[2]">

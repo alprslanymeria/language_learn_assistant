@@ -22,6 +22,9 @@ export default function SessionPage() {
     const {info} = sessionStore();
     const {user} = userStore();
     const userId = decrypt(user.userId)
+    const practice = info.practice;
+    const language = info.language;
+    const imagePath = info.imagePath;
 
     const [activeComponent, setActiveComponent] = useState("")
     const [data, setData] = useState([])
@@ -39,25 +42,24 @@ export default function SessionPage() {
 
         const GET = async () => {
 
-            if(info.practice == "reading" || info.practice == "writing") {
+            if(practice == "reading" || practice == "writing") {
                 
-                if(info.practice == "reading") setActiveComponent("reading")
-                if(info.practice == "writing") setActiveComponent("writing")
+                if(practice == "reading") setActiveComponent("reading")
+                if(practice == "writing") setActiveComponent("writing")
 
-                const response = await GetBook(info.practice, info.language, info.imagePath, userId)
+                const response = await GetBook(practice, language, imagePath, userId)
                 if(response.status != 200)
                 {
                     setError(response.message)
                     return
                 }
 
-                setData(response.data)
                 setSourcePath(response.data.sourcePath)
             }
 
-            if(info.practice == "listening"){
+            if(practice == "listening"){
 
-                const response = await GetFilm(info.language, info.imagePath, userId);
+                const response = await GetFilm(language, imagePath, userId);
                 if(response.status != 200)
                 {
                     setActiveComponent("listening")
@@ -65,14 +67,13 @@ export default function SessionPage() {
                     return
                 }
 
-                setData(response.data)
                 setActiveComponent("listening")
                 setSourcePath(response.data.sourcePath)
             }
 
-            if(info.practice == "flashcards"){
+            if(practice == "flashcards"){
 
-                const response = await GetWords(info.language, userId);
+                const response = await GetWords(language, userId);
                 if(response.status != 200)
                 {   
                     setActiveComponent("flashcards")
