@@ -6,7 +6,7 @@ import { checkLiveSession } from "./actions/liveSession";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL
 
-const protectedRoutes = ["/create", "/session", "/lang", "/detail"];
+const protectedRoutes = ["/create", "/session", "/lang", "/detail", "/list"];
 const publicRoutes = ["/login", "/signup"];
 const passRoutes = ["/api", "_next", "/favicon.ico"]
 
