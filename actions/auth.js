@@ -61,6 +61,7 @@ export async function signup(prevState, formData)
           userId: userId,
           email: email,
           password: hashedPassword,
+          updatedAt: new Date(),
         },
       });
 

@@ -2,7 +2,7 @@
 
 import { prisma } from "@/app/lib/prisma"
 
-export async function GetCategories(language){
+export async function GetCategories(language, userId){
 
     try {
         
@@ -15,10 +15,10 @@ export async function GetCategories(language){
 
         let names = []
 
-        const categories = await prisma.category.findMany({
+        const categories = await prisma.flashcardCategory.findMany({
             where:{
-
-                languageId: lang.id
+                languageId: lang.id,
+                userId: userId
             }
         })
 

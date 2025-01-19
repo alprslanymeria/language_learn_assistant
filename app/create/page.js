@@ -11,6 +11,10 @@ import SliderComponent from "@/components/SliderComponent";
 // STORE
 import sentenceStore from "@/store/sentenceStore";
 import wordStore from "@/store/wordStore";
+import { sessionStore } from "@/store/sessionStore";
+import { decrypt } from "../lib/crypto";
+import { userStore } from "@/store/userStore";
+import { GetCategories } from "@/actions/Flashcard";
 
 export default function Create() {
 
@@ -26,6 +30,8 @@ export default function Create() {
     //STORE
     const {setSelectedText, setInputText, setTranslatedText, setShowTranslation, setSentences} = sentenceStore();
     const {setWords, setIndex} = wordStore();
+    const {user} = userStore();
+    const userId = decrypt(user.userId);
 
     useEffect(() => {   
 
@@ -43,7 +49,7 @@ export default function Create() {
 
             if(practice == 'reading' || practice == 'writing')
             {
-                const response = await GetBooks(language, practice)
+                const response = await GetBooks(language, practice, userId)
 
                 if(response.status == 200)
                     setData(response.data)
@@ -54,7 +60,7 @@ export default function Create() {
 
             if(practice == 'listening')
             {
-                const response = await GetFilms(language)
+                const response = await GetFilms(language, userId)
 
                 if(response.status == 200)
                     setData(response.data)
@@ -65,12 +71,11 @@ export default function Create() {
 
             if(practice == 'flashcards')
             {
-                setData([
-                    "Verb",
-                    "Adjective",
-                    "Noun",
-                    "Adverb"
-                ])
+                const response = await GetCategories(language, userId)
+
+                if(response.status == 200) setData(response.data)
+
+                if(response.status == 500) setError("")
             }
         }
 

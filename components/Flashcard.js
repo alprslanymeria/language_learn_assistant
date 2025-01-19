@@ -54,6 +54,7 @@ export default function Flashcard({data}) {
 
         const word = {
             oldSessionId: oldSessionId,
+            userId: userId,
             word: text1,
             answer: text2,
             status: status

@@ -10,7 +10,7 @@ export default function SentencesTable () {
     useEffect(() => {}, [sentences])
     
     return (
-        <div className="mt-8 bg-white rounded-lg shadow-md">
+        <div className="mt-8 w-full bg-white rounded-lg shadow-md">
             <table className="table-auto w-full border-collapse border border-gray-300">
                 <thead>
                     <tr className="bg-gray-100">

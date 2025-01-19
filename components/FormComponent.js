@@ -58,6 +58,7 @@ export default function FormComponent(){
         //SAVED TO STATE
         const sentence = {
             oldSessionId: oldSessionId,
+            userId: userId,
             original: selectedText,
             own: inputText,
             translate: translatedText.at(0),

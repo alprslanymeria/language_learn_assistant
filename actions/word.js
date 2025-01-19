@@ -1,7 +1,7 @@
 "use server"
 import { prisma } from "@/app/lib/prisma"
 
-export async function GetWords(language)
+export async function GetWords(language, userId)
 {
     try {
         
@@ -14,7 +14,8 @@ export async function GetWords(language)
 
         const words = await prisma.word.findMany({
             where: {
-                languageId: lang.id
+                languageId: lang.id,
+                userId: userId
             }
         })
 

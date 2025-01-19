@@ -13,7 +13,8 @@ export async function GetFilms(language){
 
         const films = await prisma.film.findMany({
             where: {
-                languageId: lang.id
+                languageId: lang.id,
+                userId: userId
             }
         })
 
@@ -26,14 +27,15 @@ export async function GetFilms(language){
 }
 
 
-export async function GetFilm(language, imagePath){
+export async function GetFilm(language, imagePath, userId){
 
     try {
         
         // GET LANGUAGE ID
         const lang = await prisma.language.findUnique({
             where: {
-                language: language
+                language: language,
+                userId: userId
             }
         })
 

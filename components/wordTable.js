@@ -12,7 +12,7 @@ export default function WordTable () {
     useEffect(() => {}, [words])
     
     return (
-        <div className="mt-8 bg-white">
+        <div className="mt-8 w-full bg-white">
             <table className="table-auto w-full border-collapse border border-gray-300">
                 <thead>
                     <tr className="bg-gray-100">

@@ -7,9 +7,10 @@ export async function SaveWords(words){
     try {
 
         for (const item of words) {
-            await prisma.wordSession.create({
+            await prisma.sessionWord.create({
                 data: {
                     oldSessionId: item.oldSessionId,
+                    userId: item.userId,
                     word: item.word,
                     answer: item.answer,
                     status: item.status
@@ -37,8 +38,8 @@ export async function GetWordsById(id) {
             }
         })
 
-        //Bu id bilgisini kullanarak sentence tablosundan verileri çek
-        const words = await prisma.wordSession.findMany({
+        //Bu id bilgisini kullanarak SessionWord tablosundan verileri çek
+        const words = await prisma.sessionWord.findMany({
             where: {
                 oldSessionId: oldSession.oldSessionId
             }

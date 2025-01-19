@@ -13,11 +13,15 @@ import { GetFilm } from '@/actions/film';
 import { GetWords } from '@/actions/word';
 // STORE
 import { sessionStore } from '@/store/sessionStore';
+import { decrypt } from '../lib/crypto';
+import { userStore } from '@/store/userStore';
 
 export default function SessionPage() {
 
     // GET INFOS FROM ZUSTAND
     const {info} = sessionStore();
+    const {user} = userStore();
+    const userId = decrypt(user.userId)
 
     const [activeComponent, setActiveComponent] = useState("")
     const [data, setData] = useState([])
@@ -40,7 +44,7 @@ export default function SessionPage() {
                 if(info.practice == "reading") setActiveComponent("reading")
                 if(info.practice == "writing") setActiveComponent("writing")
 
-                const response = await GetBook(info.practice, info.language, info.imagePath)
+                const response = await GetBook(info.practice, info.language, info.imagePath, userId)
                 if(response.status != 200)
                 {
                     setError(response.message)
@@ -53,7 +57,7 @@ export default function SessionPage() {
 
             if(info.practice == "listening"){
 
-                const response = await GetFilm(info.language, info.imagePath);
+                const response = await GetFilm(info.language, info.imagePath, userId);
                 if(response.status != 200)
                 {
                     setActiveComponent("listening")
@@ -68,7 +72,7 @@ export default function SessionPage() {
 
             if(info.practice == "flashcards"){
 
-                const response = await GetWords(info.language);
+                const response = await GetWords(info.language, userId);
                 if(response.status != 200)
                 {   
                     setActiveComponent("flashcards")

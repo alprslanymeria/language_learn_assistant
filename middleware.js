@@ -8,14 +8,17 @@ const BASE = process.env.NEXT_PUBLIC_API_URL
 
 const protectedRoutes = ["/create", "/session", "/lang", "/detail"];
 const publicRoutes = ["/login", "/signup"];
+const passRoutes = ["/api", "_next", "/favicon.ico"]
 
 export default async function middleware(req){
 
     const path = req.nextUrl.pathname
+    // console.log(path)
     const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route));
     const isPublicRoute = publicRoutes.some(route => path.startsWith(route));
+    const isPassRoute = passRoutes.some(route => path.startsWith(route));
 
-    if(path.startsWith("/api") || path.startsWith("/_next") || path.startsWith("/favicon.ico"))
+    if(isPassRoute)
     {
         return NextResponse.next()
     }

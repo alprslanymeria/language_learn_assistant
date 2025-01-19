@@ -7,9 +7,10 @@ export async function SaveSentences(sentences) {
     try {
         
         for (const item of sentences) {
-            await prisma.sentence.create({
+            await prisma.sessionSentence.create({
                 data: {
                     oldSessionId: item.oldSessionId,
+                    userId: item.userId,
                     original: item.original,
                     own: item.own,
                     translate: item.translate,
@@ -39,7 +40,7 @@ export async function GetSentencesById(id) {
         })
 
         //Bu id bilgisini kullanarak sentence tablosundan verileri çek
-        const sentences = await prisma.sentence.findMany({
+        const sentences = await prisma.sessionSentence.findMany({
             where: {
                 oldSessionId: oldSession.oldSessionId
             }

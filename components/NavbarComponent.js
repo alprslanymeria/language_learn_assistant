@@ -39,7 +39,7 @@ export default function NavbarComponent() {
                 <p className={`text-lg sm:text-2xl md:text-4xl font-normal tracking-widest text-black text-left ${neuton.className}`}>
                     LANGUAGE LEARN ASSISTANT
                 </p>
-                {/* <Email email={email} userId={userId}></Email> */}
+                <Email email={email} userId={userId}></Email>
             </div>
         </nav>
     )

@@ -1,7 +1,7 @@
 "use server"
 import { prisma } from "../app/lib/prisma"
 
-export async function GetBooks(language, practice){
+export async function GetBooks(language, practice, userId){
 
     try {
 
@@ -16,7 +16,8 @@ export async function GetBooks(language, practice){
         {
             const books = await prisma.book.findMany({
                 where: {
-                languageId: 2
+                    languageId: 2,
+                    userId: userId
                 }
             })
 
@@ -26,7 +27,8 @@ export async function GetBooks(language, practice){
         // FOR READING
         const books = await prisma.book.findMany({
             where: {
-                languageId: lang.id
+                languageId: lang.id,
+                userId: userId
             }
         })
 
@@ -40,7 +42,7 @@ export async function GetBooks(language, practice){
 }
 
 
-export async function GetBook(practice, language, imagePath){
+export async function GetBook(practice, language, imagePath, userId){
 
     try {
 
@@ -59,6 +61,7 @@ export async function GetBook(practice, language, imagePath){
                 where: {
                     languageId: lang.id,
                     imagePath: imagePath,
+                    userId: userId
                 }
             })
         }
@@ -69,6 +72,7 @@ export async function GetBook(practice, language, imagePath){
                 where: {
                     languageId: 2,
                     imagePath: imagePath,
+                    userId: userId
                 }
             })
         }

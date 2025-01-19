@@ -1,32 +1,3 @@
-// import { create } from 'zustand'
-
-// export const sessionStore = create((set, get) => ({
-
-//     info: {
-//         language: "",
-//         practice: "",
-//         imagePath: ""
-//     },
-
-//     setInfo: (newInfo) => set((state) => ({
-//         user: { ...state.info, ...newInfo }
-//     })),
-
-//     setLanguage: (language) => set((state) => ({
-//         user: { ...state.info, language }
-//     })),
-
-//     setPractice: (practice) => set((state) => ({
-//         user: { ...state.info, practice }
-//     })),
-
-//     setImagePath: (imagePath) => set((state) => ({
-//         user: { ...state.info, imagePath }
-//     }))
-
-// }))
-
-
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
