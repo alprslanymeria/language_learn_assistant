@@ -80,3 +80,22 @@ export async function GetFilm(language, imagePath, userId){
     }
 }
 
+
+export async function GetFilmById(id){
+
+    try {
+        
+        const film = await prisma.film.findUnique({
+
+            where: {
+                id: parseInt(id)
+            }
+        })
+
+        return {data: film, status: 200}
+    } catch (error) {
+        
+        return {data: null, status: 500, message: "Film verisi alınırken bir hata oluştu", details: error.message}
+    }
+}
+

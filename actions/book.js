@@ -72,7 +72,6 @@ export async function GetAllBooks(userId){
 
 }
 
-
 export async function GetBook(practice, language, imagePath, userId){
 
     try {
@@ -110,6 +109,25 @@ export async function GetBook(practice, language, imagePath, userId){
 
         return {data: book, status: 200}
         
+    } catch (error) {
+        
+        return {data: null, status: 500, message: "Kitap verisi alınırken bir hata oluştu", details: error.message}
+    }
+}
+
+export async function GetBookById(id){
+
+    try {
+        
+        const book = await prisma.book.findUnique({
+
+            where: {
+                id: parseInt(id)
+            }
+        })
+
+        return {data: book, status: 200}
+
     } catch (error) {
         
         return {data: null, status: 500, message: "Kitap verisi alınırken bir hata oluştu", details: error.message}

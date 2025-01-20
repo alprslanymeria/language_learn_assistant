@@ -45,3 +45,20 @@ export async function GetAllWords(userId)
         return {data: null,  status: 500, message:"Kelimeler alınırken bir hata oluştu" , details: error.message}
     }
 }
+
+export async function GetWordById(id)
+{
+    try {
+        const word = await prisma.word.findUnique({
+            where: {
+                id: parseInt(id)
+            }
+        })
+
+        return {data: word, status: 200}
+
+    } catch (error) {
+        
+        return {data: null,  status: 500, message:"Kelime alınırken bir hata oluştu" , details: error.message}
+    }
+}   

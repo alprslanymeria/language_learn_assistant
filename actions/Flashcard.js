@@ -52,3 +52,20 @@ export async function GetAllCategories(userId){
         return {data: null, status: 500, message: "Kategoriler getirilirken bir hata oluştu..", details: error.message}
     }
 }
+
+export async function GetCategoryById(id){
+
+    try {
+        const category = await prisma.flashcardCategory.findUnique({
+            where: {
+                id: parseInt(id)
+            }
+        })
+
+        return {data: category, status: 200}
+
+    } catch (error) {
+        
+        return {data: null, status: 500, message: "Kategori getirilirken bir hata oluştu..", details: error.message}
+    }
+}
