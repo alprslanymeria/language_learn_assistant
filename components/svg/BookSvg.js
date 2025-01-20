@@ -16,7 +16,7 @@ const BookSvg = ({imagePath, color}) => {
             y="103" 
             width="258"
             height="442"
-            preserveAspectRatio="xMidYMid meet"
+            preserveAspectRatio="none"
             href={imagePath}
             />
         </g>
@@ -26,3 +26,4 @@ const BookSvg = ({imagePath, color}) => {
 }
 
 export default BookSvg;
+
