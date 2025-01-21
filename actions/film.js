@@ -11,7 +11,7 @@ export async function GetFilms(language, userId){
             }
         })
 
-        let imagePaths = []
+        // let imagePaths = []
 
         const films = await prisma.film.findMany({
             where: {
@@ -20,12 +20,12 @@ export async function GetFilms(language, userId){
             }
         })
 
-        films.map((item) => {
-            console.log(item.imagePath)
-            imagePaths.push(item.imagePath)
-        })
+        // films.map((item) => {
+        //     console.log(item.imagePath)
+        //     imagePaths.push(item.imagePath)
+        // })
 
-        return {data: imagePaths, status: 200}
+        return {data: films, status: 200}
 
     } catch (error) {
         

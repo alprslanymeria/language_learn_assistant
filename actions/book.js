@@ -11,7 +11,7 @@ export async function GetBooks(language, practice, userId){
             }
         })
 
-        let imagePaths = []
+        // let imagePaths = []
         
         // FOR WRITING
         if(practice == 'writing')
@@ -23,12 +23,12 @@ export async function GetBooks(language, practice, userId){
                 }
             })
 
-            books.map((item) => {
+            // books.map((item) => {
 
-                imagePaths.push(item.imagePath)
-            })
+            //     imagePaths.push(item.imagePath)
+            // })
 
-            return {data: imagePaths, status: 200}
+            return {data: books, status: 200}
         }
 
         // FOR READING
@@ -39,12 +39,12 @@ export async function GetBooks(language, practice, userId){
             }
         })
 
-        books.map((item) => {
+        // books.map((item) => {
 
-            imagePaths.push(item.imagePath)
-        })
+        //     imagePaths.push(item.imagePath)
+        // })
 
-        return {data: imagePaths, status: 200}
+        return {data: books, status: 200}
 
     } catch (error) {
         
@@ -67,7 +67,7 @@ export async function GetAllBooks(userId){
 
     } catch (error) {
         
-        return {data: null, status: 500, message: "Kitap verileri alınırken bir hata oluştu", details: error.message}
+        return {data: null, status: 500, message: error.message, details: error.message}
     }
 
 }
@@ -111,7 +111,7 @@ export async function GetBook(practice, language, imagePath, userId){
         
     } catch (error) {
         
-        return {data: null, status: 500, message: "Kitap verisi alınırken bir hata oluştu", details: error.message}
+        return {data: null, status: 500, message: error.message, details: error.message}
     }
 }
 

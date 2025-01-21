@@ -3,6 +3,8 @@
 import { prisma } from "@/app/lib/prisma"
 import { Storage } from "@google-cloud/storage"
 import { redirect } from "next/navigation"
+import { Vibrant } from "node-vibrant/node";
+import sharp from "sharp"
 
 //ZOD İLE VERİ KONTROLÜ YAPILIR
 
@@ -37,11 +39,47 @@ export async function addOrUpdate(prevState, formData){
         let existingRecord;
         let file1Url;
         let file2Url;
+        let leftSideColor;
+
+        const getLeftSideColor = async (bufferForFile1) => {
+
+            try {
+                const buffer = Buffer.from(bufferForFile1);
+                
+                // First get the processed buffer and its metadata
+                const processedBuffer = await sharp(buffer)
+                    .resize(300, 300, { fit: 'inside' })
+                    .toBuffer();
+                    
+                // Get the metadata to access width and height
+                const metadata = await sharp(processedBuffer).metadata();
+                
+                // Now use the metadata for the extraction
+                const leftSideBuffer = await sharp(processedBuffer)
+                    .extract({
+                        left: 0,
+                        top: 0,
+                        width: Math.floor(metadata.width / 3),
+                        height: metadata.height
+                    })
+                    .toBuffer();
+                    
+                // Analyze left side colors
+                const leftSidePalette = await Vibrant.from(leftSideBuffer).getPalette();
+                leftSideColor = leftSidePalette.Vibrant.hex;
+                
+                
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
+
 
         if(file1 != null && file2 != null && (table == "book" || table == "film"))
         {
             bufferForFile1 = await file1.arrayBuffer()
             bufferForFile2 = await file2.arrayBuffer()
+            await getLeftSideColor(bufferForFile1)
         }
 
 
@@ -91,6 +129,7 @@ export async function addOrUpdate(prevState, formData){
                             languageId: parseInt(language),
                             bookName: input1,
                             imagePath: file1Url,
+                            leftSideColor: leftSideColor,
                             sourcePath: file2Url
                         }
                     })
@@ -102,6 +141,7 @@ export async function addOrUpdate(prevState, formData){
                             languageId: parseInt(language),
                             filmName: input1,
                             imagePath: file1Url,
+                            leftSideColor: leftSideColor,
                             sourcePath: file2Url
                         }
                     })
@@ -260,6 +300,7 @@ export async function addOrUpdate(prevState, formData){
             }
         }
 
+
         switch(type){
 
             case "Create":
@@ -270,7 +311,6 @@ export async function addOrUpdate(prevState, formData){
                 break;
         }
 
-        // return {status: 200}
 
     } catch (error) {
 

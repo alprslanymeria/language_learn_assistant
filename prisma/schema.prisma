@@ -59,6 +59,7 @@ model Book {
   languageId        Int
   bookName          String
   imagePath         String
+  leftSideColor     String?
   sourcePath        String
   
   //REFERANS ALDIKLARI
@@ -72,6 +73,7 @@ model Film {
   languageId        Int
   filmName          String @unique
   imagePath         String @unique
+  leftSideColor     String?
   sourcePath        String
 
   //REFERANS ALDIKLARI
@@ -115,6 +117,7 @@ model OldSession {
   practiceId        Int
   createdOn         DateTime @default(now())
   imagePath         String
+  leftSideColor     String?
   rate              Decimal
 
   //REFERANS VERDİKLERİ

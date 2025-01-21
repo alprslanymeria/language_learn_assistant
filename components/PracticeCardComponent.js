@@ -9,11 +9,11 @@ export default function PracticeCard({ item, practice, language, index }) {
     switch (practice) {
       case 'reading':
       case 'writing':
-        return <BookSvg imagePath={item}></BookSvg> 
+        return <BookSvg imagePath={item.imagePath} color={item.leftSideColor}></BookSvg> 
       case 'flashcards':
         return <DeckSvg text={item} language={language} />;
       case 'listening':
-        return <FilmSvg imagePath={item} index={index}></FilmSvg>
+        return <FilmSvg imagePath={item.imagePath} index={index}></FilmSvg>
       default:
         return null;
     }

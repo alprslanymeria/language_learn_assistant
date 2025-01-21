@@ -93,6 +93,7 @@ export default function SessionPage() {
     return (
         
         <div>
+            {error != "" && <div>{error}</div>}
             {componentMap[activeComponent] || <div></div>}
         </div>
     );

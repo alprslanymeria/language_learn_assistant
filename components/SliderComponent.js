@@ -42,7 +42,7 @@ export default function SliderComponent({ data, practice, language }) {
     // BURADAKİ BİLGİLERE SESSION SAYFASINDA İHTİYAÇ DUYULUR
     practice == 'flashcards'
     ? setInfo({categoryName: selectedItem, sessionId: encryptedSessionId})
-    : setInfo({imagePath: selectedItem, sessionId: encryptedSessionId})
+    : setInfo({imagePath: selectedItem.imagePath, sessionId: encryptedSessionId})
 
     router.push(`http://localhost:3000/session?id=${safeUrl}`);
   };
