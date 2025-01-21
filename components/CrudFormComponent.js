@@ -114,20 +114,44 @@ const CrudFormComponent = ({formHeading, labelNames, hiddens, table, id, type}) 
                 </select>
             </div>}
 
+            {/* WORD */}
+            {hiddens.at(1) && 
+            <div>
+                <label 
+                  htmlFor="word" 
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  {labelNames.at(1)}
+                </label>
+                <select
+                  id="word"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                  value={formData.wordCategory}
+                  name='wordCategory'
+                  onChange={(e) => setFormData({ ...formData, wordCategory: e.target.value })}
+                >
+                  {formData.wordOptions.map( (option) => (
+                    <option value={option.categoryName}>{option.categoryName}</option>
+                  ))}
+
+                </select>
+            </div>}
+
+
             {/* INPUT 1 */}
-            {hiddens.at(1) &&
+            {hiddens.at(2) &&
             <div>
                 <label 
                   htmlFor="input1" 
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  {labelNames.at(1)}
+                  {labelNames.at(2)}
                 </label>
                 <input
                   type="text"
                   id="input1"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder={`${labelNames.at(1)} giriniz`}
+                  placeholder={`${labelNames.at(2)} giriniz`}
                   value={formData.input1}
                   name='input1'
                   onChange={(e) => setFormData({ ...formData, input1: e.target.value })}
@@ -135,19 +159,19 @@ const CrudFormComponent = ({formHeading, labelNames, hiddens, table, id, type}) 
             </div>}
 
             {/* INPUT 2 */}
-            {hiddens.at(2) &&
+            {hiddens.at(3) &&
             <div>
                 <label 
                   htmlFor="input2" 
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  {labelNames.at(2)}
+                  {labelNames.at(3)}
                 </label>
                 <input
                   type="text"
                   id="input2"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder={`${labelNames.at(2)} giriniz`}
+                  placeholder={`${labelNames.at(3)} giriniz`}
                   value={formData.input2}
                   name='input2'
                   onChange={(e) => setFormData({ ...formData, input2: e.target.value })}
@@ -155,13 +179,13 @@ const CrudFormComponent = ({formHeading, labelNames, hiddens, table, id, type}) 
             </div>}
 
             {/* FILE 1*/}
-            {hiddens.at(3) &&
+            {hiddens.at(4) &&
             <div>
               <label 
                 htmlFor="file" 
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                {labelNames.at(3)}
+                {labelNames.at(4)}
               </label>
               <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition-colors">
                 <div className="space-y-1 flex flex-col items-center">
@@ -199,13 +223,13 @@ const CrudFormComponent = ({formHeading, labelNames, hiddens, table, id, type}) 
             </div>}
 
             {/* FILE 2*/}
-            {hiddens.at(4) &&
+            {hiddens.at(5) &&
             <div>
               <label 
                 htmlFor="file" 
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                {labelNames.at(4)}
+                {labelNames.at(5)}
               </label>
               <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition-colors">
                 <div className="space-y-1 flex flex-col items-center">

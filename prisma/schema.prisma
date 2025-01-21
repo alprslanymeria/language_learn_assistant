@@ -80,26 +80,31 @@ model Film {
 }
 
 model FlashcardCategory {
-  id                Int @id @default(autoincrement())
-  userId            String
-  languageId        Int
-  categoryName      String @unique
+  id           Int    @id @default(autoincrement())
+  userId       String
+  languageId   Int
+  categoryName String @unique
+
+  //REFERANS VERDİKLERİ
+  words        Word[]
 
   //REFERANS ALDIKLARI
-  user User @relation(fields: [userId], references: [userId])
-  language Language @relation(fields: [languageId], references: [id])
+  user         User     @relation(fields: [userId], references: [userId], onUpdate: NoAction, onDelete: NoAction)
+  language     Language @relation(fields: [languageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
 }
 
 model Word {
-  id                Int @id @default(autoincrement())
-  userId            String
-  languageId        Int
-  wordToLearn       String
-  translatedWord    String
+  id             Int      @id @default(autoincrement())
+  userId         String
+  languageId     Int
+  categoryName   String
+  wordToLearn    String
+  translatedWord String
 
   //REFERANS ALDIKLARI
-  user User @relation(fields: [userId], references: [userId])
-  language Language @relation(fields: [languageId], references:[id])
+  user           User              @relation(fields: [userId], references: [userId], onUpdate: NoAction, onDelete: NoAction)
+  language       Language          @relation(fields: [languageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  category       FlashcardCategory @relation(fields: [categoryName], references: [categoryName], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model OldSession {

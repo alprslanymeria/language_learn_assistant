@@ -1,9 +1,12 @@
 "use client"
 
+import { GetAllCategories, GetCategories } from "@/actions/Flashcard";
 import CrudFormComponent from "@/components/CrudFormComponent";
 import editFormStore from "@/store/editFormStore";
+import { userStore } from "@/store/userStore";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
+import { decrypt } from "../lib/crypto";
 
 export default function AddPage(){
 
@@ -15,34 +18,48 @@ export default function AddPage(){
     const [isHidden, setIsHidden] = useState([])
 
     const {formData, setFormData} = editFormStore();
+    const {user} = userStore();
+    const userId = decrypt(user.userId)
 
     useEffect(() => {
 
-        setFormData({language: "", input1: "", input2: "", file1: null, file2: null})
+        setFormData({language: "", wordCategory:"", input1: "", input2: "", file1: null, file2: null, wordOptions:[]})
 
         switch (table) {
             case "book":
                 setFormHeading("Create Book")
-                setLabelNames(["Language", "Book Name", "", "Book Image", "Book Pdf"])
-                setIsHidden([true, true, false, true, true])
+                setLabelNames(["Language", "", "Book Name", "", "Book Image", "Book Pdf"])
+                setIsHidden([true,false, true, false, true, true])
                 break;
             case "film":
                 setFormHeading("Create Film")
-                setLabelNames(["Language", "Film Name", "", "Film Image", "Film Video"])
-                setIsHidden([true, true, false, true, true])
+                setLabelNames(["Language", "", "Film Name", "", "Film Image", "Film Video"])
+                setIsHidden([true,false, true, false, true, true])
                 break;
             case "word":
                 setFormHeading("Create New Word")
-                setLabelNames(["Language", "Word", "Answer", "", ""])
-                setIsHidden([true, true, true, false, false])
+                setLabelNames(["Language","Deck", "Word", "Answer", "", ""])
+                setIsHidden([true,true, true, true, false, false])
                 break;
             case "flashcardCategory":
                 setFormHeading("Create Deck Category")
-                setLabelNames(["Deck", "Category", "", "", ""])
-                setIsHidden([true, true, false, false, false])
+                setLabelNames(["Deck","", "Category", "", "", ""])
+                setIsHidden([true,false, true, false, false, false])
                 break;
         }
     }, [])
+
+    useEffect(() => {
+
+        const GET = async () => {
+
+            const response = await GetAllCategories(userId)
+            if(response.status == 200) setFormData({wordOptions: response.data})
+        }
+
+        if(table == "word") GET()
+            
+    }, [userId])
 
     return (
 

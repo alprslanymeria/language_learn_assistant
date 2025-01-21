@@ -1,7 +1,7 @@
 "use server"
 import { prisma } from "@/app/lib/prisma"
 
-export async function GetWords(language, userId)
+export async function GetWords(language, userId, categoryName)
 {
     try {
         
@@ -15,7 +15,8 @@ export async function GetWords(language, userId)
         const words = await prisma.word.findMany({
             where: {
                 languageId: lang.id,
-                userId: userId
+                userId: userId,
+                categoryName: categoryName
             }
         })
 
@@ -26,7 +27,6 @@ export async function GetWords(language, userId)
         return {data: null,  status: 500, message:"Kelimeler alınırken bir hata oluştu" , details: error.message}
     }
 }
-
 
 export async function GetAllWords(userId)
 {
@@ -42,7 +42,7 @@ export async function GetAllWords(userId)
 
     } catch (error) {
         
-        return {data: null,  status: 500, message:"Kelimeler alınırken bir hata oluştu" , details: error.message}
+        return {data: null,  status: 500, message:error.message , details: error.message}
     }
 }
 

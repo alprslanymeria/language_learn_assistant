@@ -121,7 +121,7 @@ export default function ListFlashcard() {
                     <h2 className="text-xl font-semibold mb-4 text-gray-800">Categories</h2>
                     <div className="overflow-x-auto">
                         <TableComponent 
-                            width={300} 
+                            width={400} 
                             columns={columnNamesForCategory} 
                             contents={contentsForCategory} 
                             data={categoryData} 

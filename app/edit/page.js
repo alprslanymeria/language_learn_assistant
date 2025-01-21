@@ -2,13 +2,15 @@
 
 import { GetBookById } from "@/actions/book";
 import { GetFilmById } from "@/actions/film";
-import { GetCategoryById } from "@/actions/Flashcard";
+import { GetAllCategories, GetCategoryById } from "@/actions/Flashcard";
 import { GetWordById } from "@/actions/word";
 import CrudFormComponent from "@/components/CrudFormComponent";
 import editFormStore from "@/store/editFormStore";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { set } from "zod";
+import { decrypt } from "../lib/crypto";
+import { userStore } from "@/store/userStore";
 
 export default function EditPage(){
 
@@ -18,11 +20,11 @@ export default function EditPage(){
 
     const [error, setError] = useState("")
     const {formData, setFormData} = editFormStore();
+    const {user} = userStore();
+    const userId = decrypt(user.userId)
 
     const handler = (veri, type) => {
         
-        
-
         switch(type){
             case "book":
                 setFormData({language: veri.languageId, input1: veri.bookName})
@@ -31,9 +33,10 @@ export default function EditPage(){
                 setFormData({language: veri.languageId, input1: veri.filmName})
                 break;
             case "word":
-                setFormData({language: veri.languageId, input1: veri.wordToLearn, input2: veri.translatedWord})
+                setFormData({language: veri.languageId, input1: veri.wordToLearn, input2: veri.translatedWord, wordCategory: veri.categoryName})
                 break;
             case "flashcardCategory":
+                setFormData({language: veri.languageId, input1: veri.categoryName})
                 break;
         }
     }
@@ -58,6 +61,8 @@ export default function EditPage(){
                     response = await GetWordById(id)
                     if(response.status == 200) handler(response.data, "word")
                     if(response.status == 500) setError(response.message)
+                    const result = await GetAllCategories(userId)
+                    if(result.status == 200) setFormData({wordOptions: result.data})
                     break;
                 case "flashcardCategory":
                     response = await GetCategoryById(id)
@@ -83,23 +88,23 @@ export default function EditPage(){
         switch (table) {
             case "book":
                 setFormHeading("Book Edit")
-                setLabelNames(["Language", "Book Name", "", "Book Image", "Book Pdf"])
-                setIsHidden([true, true, false, true, true])
+                setLabelNames(["Language", "", "Book Name", "", "Book Image", "Book Pdf"])
+                setIsHidden([true, false, true, false, true, true])
                 break;
             case "film":
                 setFormHeading("Film Edit")
-                setLabelNames(["Language", "Film Name", "", "Film Image", "Film Video"])
-                setIsHidden([true, true, false, true, true])
+                setLabelNames(["Language","", "Film Name", "", "Film Image", "Film Video"])
+                setIsHidden([true, false, true, false, true, true])
                 break;
             case "word":
                 setFormHeading("Word Edit")
-                setLabelNames(["Language", "Word", "Answer", "", ""])
-                setIsHidden([true, true, true, false, false])
+                setLabelNames(["Language", "Deck", "Word", "Answer", "", ""])
+                setIsHidden([true,true, true, true, false, false])
                 break;
             case "flashcardCategory":
                 setFormHeading("Flashcard Category Edit")
-                setLabelNames(["Deck", "Category", "", "", ""])
-                setIsHidden([true, true, false, false, false])
+                setLabelNames(["Deck", "", "Category", "", "", ""])
+                setIsHidden([true, false, true, false, false, false])
                 break;
         }
     }, [])

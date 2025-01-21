@@ -14,6 +14,7 @@ export async function addOrUpdate(prevState, formData){
     const table = formData.get("table")
     const id = formData.get("id")
     const language = formData.get("language")
+    const wordCategory = formData.get("wordCategory")
     const input1 = formData.get("input1")
     const input2 = formData.get("input2")
     const file1 = formData.get("file1")
@@ -29,7 +30,8 @@ export async function addOrUpdate(prevState, formData){
         })
         const imageBucket = storage.bucket("language-learn-assistant-images")
 
-
+        let oldFile1Url;
+        let oldFile2Url;
         let bufferForFile1;
         let bufferForFile2;
         let existingRecord;
@@ -111,6 +113,7 @@ export async function addOrUpdate(prevState, formData){
                             languageId: parseInt(language),
                             wordToLearn: input1,
                             translatedWord: input2,
+                            categoryName: wordCategory
                         }
                     })
                     break;
@@ -128,10 +131,14 @@ export async function addOrUpdate(prevState, formData){
 
         const handleEdit = async () => {
 
-            // GET OLD FILE INFO'S
-            await getExistingRecord();
-            const oldFile1Url = existingRecord.imagePath;
-            const oldFile2Url = existingRecord.sourcePath;
+            if(file1 != null && file2 != null && (table == "book" || table == "film"))
+            {
+                // GET OLD FILE INFO'S
+                await getExistingRecord();
+                oldFile1Url = existingRecord.imagePath;
+                oldFile2Url = existingRecord.sourcePath;
+            }
+            
 
             if(file1 != null && file2 != null && (table == "book" || table == "film"))
             {
@@ -199,6 +206,7 @@ export async function addOrUpdate(prevState, formData){
                             languageId: parseInt(language),
                             wordToLearn: input1,
                             translatedWord: input2,
+                            categoryName: wordCategory
                         }
                     });
                     break;
@@ -213,19 +221,23 @@ export async function addOrUpdate(prevState, formData){
                     break;
             }
 
-            // DELETE OLD FILES
-            if (oldFile1Url) {
-                const oldFile1Name = oldFile1Url.split('/').pop();
-                const isExist = await imageBucket.file(oldFile1Name).exists();
-                if(isExist)
-                    await imageBucket.file(oldFile1Name).delete();
-            }
+            if(file1 != null && file2 != null && (table == "book" || table == "film"))
+            {
+                // DELETE OLD FILES
+                if (oldFile1Url) {
+                    const oldFile1Name = oldFile1Url.split('/').pop();
+                    const isExist = await imageBucket.file(oldFile1Name).exists();
+                    if(isExist)
+                        await imageBucket.file(oldFile1Name).delete();
+                }
 
-            if (oldFile2Url) {
-                const oldFile2Name = oldFile2Url.split('/').pop();
-                const isExist = await imageBucket.file(oldFile2Name).exists();
-                    await imageBucket.file(oldFile2Name).delete();
+                if (oldFile2Url) {
+                    const oldFile2Name = oldFile2Url.split('/').pop();
+                    const isExist = await imageBucket.file(oldFile2Name).exists();
+                        await imageBucket.file(oldFile2Name).delete();
+                }
             }
+            
         }
 
         const getExistingRecord = async () => {
@@ -310,7 +322,7 @@ export async function deleteById(id, table){
 
     } catch (error) {
 
-        return {status: 500, message: "Veriler silinirken bir hata oluştu", details: error.message}
+        return {status: 500, message: error.message, details: error.message}
 
     }
 }

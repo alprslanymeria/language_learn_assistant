@@ -25,6 +25,7 @@ export default function SessionPage() {
     const practice = info.practice;
     const language = info.language;
     const imagePath = info.imagePath;
+    const categoryName = info.categoryName;
 
     const [activeComponent, setActiveComponent] = useState("")
     const [data, setData] = useState([])
@@ -73,11 +74,11 @@ export default function SessionPage() {
 
             if(practice == "flashcards"){
 
-                const response = await GetWords(language, userId);
+                const response = await GetWords(language, userId, categoryName);
                 if(response.status != 200)
                 {   
                     setActiveComponent("flashcards")
-                    setError(response.message)
+                    setError(response.details)
                     return
                 }
 
